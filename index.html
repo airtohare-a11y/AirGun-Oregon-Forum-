@@ -43,12 +43,15 @@ canvas{display:block}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
 .mbox{background:var(--card);border:2px solid var(--g);border-radius:16px;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;padding:28px}
 .tip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:12px;pointer-events:none;z-index:50;white-space:nowrap}
+.reg-card{border:2px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border .2s,background .2s;background:var(--bg);flex:1;text-align:center}
+.reg-card:hover{border-color:var(--g)}
+.reg-card.sel-yes{border-color:var(--g4);background:rgba(0,201,87,.08)}
+.reg-card.sel-no{border-color:var(--warn);background:rgba(245,158,11,.08)}
 @media(max-width:680px){.grid2,.grid3,.grid4{grid-template-columns:1fr}.bl{grid-template-columns:1fr!important}}
 </style>
 </head>
 <body>
 
-<!-- LEGAL MODAL -->
 <div class="overlay" id="legal-modal">
   <div class="mbox">
     <div style="text-align:center;margin-bottom:20px">
@@ -57,69 +60,63 @@ canvas{display:block}
       <p class="sub" style="font-size:13px;margin-top:3px">Community · Ballistics · Training</p>
     </div>
     <div style="background:var(--bg);border-radius:8px;padding:16px;max-height:300px;overflow-y:auto;font-size:12.5px;line-height:1.8;color:var(--sub)">
-      <strong class="accent">1. TERMS OF USE</strong><br>AirGun Oregon is provided strictly for informational, educational, and community purposes. By accessing this Platform you agree to be bound by these Terms.<br><br>
+      <strong class="accent">1. TERMS OF USE</strong><br>AirGun Oregon is provided strictly for informational, educational, and community purposes.<br><br>
       <strong class="accent">2. INFORMATIONAL USE ONLY</strong><br>All ballistics calculations are theoretical estimates. <strong style="color:var(--text)">Never rely solely on this Platform's outputs for any safety, hunting, or legal decision.</strong><br><br>
-      <strong class="accent">3. SAFETY DISCLAIMER</strong><br>Airgun shooting is inherently dangerous. You assume full responsibility for safe handling, storage, transportation, and use. Always: (a) treat every airgun as loaded; (b) never point at any person; (c) keep finger off trigger until ready; (d) verify backstop before every shot; (e) use eye protection; (f) store secured from unauthorized access.<br><br>
-      <strong class="accent">4. HOLD HARMLESS &amp; LIMITATION OF LIABILITY</strong><br>TO THE FULLEST EXTENT PERMITTED BY LAW, AIRGUN OREGON LLC SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES INCLUDING PERSONAL INJURY, DEATH, OR PROPERTY DAMAGE. By using this Platform you agree to indemnify and hold harmless AirGun Oregon LLC from any claim arising from your use.<br><br>
-      <strong class="accent">5. LEGAL COMPLIANCE</strong><br>You are solely responsible for knowing and complying with all applicable laws governing airgun ownership, use, and transportation in your jurisdiction.<br><br>
-      <strong class="accent">6. AGE REQUIREMENT</strong><br>You must be at least 18 years of age. By accepting you represent and warrant that you are at least 18.<br><br>
-      <strong class="accent">7. PRIVACY POLICY</strong><br>We collect only minimum data to operate the Platform. No personal data is sold. Session data is stored locally in your browser only.<br><br>
-      <strong class="accent">8. COMMUNITY CONDUCT</strong><br>You agree not to post unlawful, threatening, abusive, or defamatory content.<br><br>
-      <strong class="accent">9. GOVERNING LAW</strong><br>These Terms are governed by the laws of the State of Oregon.
+      <strong class="accent">3. SAFETY DISCLAIMER</strong><br>Airgun shooting is inherently dangerous. Always treat every airgun as loaded. Never point at any person. Keep finger off trigger until ready. Verify backstop. Use eye protection. Store secured.<br><br>
+      <strong class="accent">4. HOLD HARMLESS</strong><br>AIRGUN OREGON LLC SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES.<br><br>
+      <strong class="accent">5. LEGAL COMPLIANCE</strong><br>You are solely responsible for knowing and complying with all applicable laws.<br><br>
+      <strong class="accent">6. AGE REQUIREMENT</strong><br>You must be at least 18 years of age.<br><br>
+      <strong class="accent">7. GOVERNING LAW</strong><br>These Terms are governed by the laws of the State of Oregon.
     </div>
     <div style="margin-top:18px">
       <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;font-size:13px;line-height:1.6;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px">
-        <input type="checkbox" id="ck1" onchange="checkBoxes()" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--g);cursor:pointer"/>
-        <span>I have read and agree to the <strong>Terms of Use</strong>, <strong>Safety Disclaimer</strong>, <strong>Hold Harmless Agreement</strong>, and <strong>Privacy Policy</strong>. I confirm I am <strong>18 years of age or older</strong>.</span>
+        <input type="checkbox" id="ck1" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--g);cursor:pointer"/>
+        <span>I have read and agree to the Terms of Use, Safety Disclaimer, Hold Harmless Agreement, and Privacy Policy. I confirm I am 18 years of age or older.</span>
       </label>
     </div>
-    <button id="accept-btn" class="btn" onclick="acceptLegal()" disabled style="width:100%;margin-top:14px;padding:12px;font-size:15px;opacity:.35">Accept &amp; Enter AirGun Oregon</button>
+    <button id="accept-btn" class="btn" disabled style="width:100%;margin-top:14px;padding:12px;font-size:15px;opacity:.35">Accept &amp; Enter AirGun Oregon</button>
     <p style="text-align:center;font-size:11px;color:var(--sub);margin-top:10px">For informational use only · Always follow local laws · AirGun Oregon LLC © 2025</p>
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
 <div class="overlay hidden" id="login-modal">
   <div class="mbox" style="max-width:360px">
-    <div class="between mb12"><h3 class="accent">Login</h3><button class="btn-ghost btn-sm" onclick="closeModal('login-modal')">✕</button></div>
+    <div class="between mb12"><h3 class="accent">Login</h3><button class="btn-ghost btn-sm" id="login-close">✕</button></div>
     <label class="lbl">Username</label><input id="l-user" placeholder="username" class="mb8"/>
     <label class="lbl">Password</label><input id="l-pass" type="password" placeholder="••••••••" class="mb16"/>
-    <button class="btn" style="width:100%" onclick="doLogin()">Login</button>
+    <button class="btn" style="width:100%" id="login-btn">Login</button>
     <p style="text-align:center;font-size:12px;color:var(--sub);margin-top:10px">Demo: admin/admin · mod/mod · user/user</p>
   </div>
 </div>
 
-<!-- REGISTER MODAL -->
 <div class="overlay hidden" id="reg-modal">
   <div class="mbox" style="max-width:400px">
-    <div class="between mb12"><h3 class="accent">Create Account</h3><button class="btn-ghost btn-sm" onclick="closeModal('reg-modal')">✕</button></div>
+    <div class="between mb12"><h3 class="accent">Create Account</h3><button class="btn-ghost btn-sm" id="reg-close">✕</button></div>
     <label class="lbl">Username</label><input id="r-user" placeholder="username" class="mb8"/>
     <label class="lbl">Email</label><input id="r-email" type="email" placeholder="you@email.com" class="mb8"/>
     <label class="lbl">Password (min 8 chars)</label><input id="r-pass" type="password" class="mb12"/>
     <label class="row mb16" style="cursor:pointer;font-size:13px"><input type="checkbox" id="r-terms"> I accept the Terms of Use and Safety Disclaimer</label>
-    <button class="btn" style="width:100%" onclick="doRegister()">Create Account</button>
+    <button class="btn" style="width:100%" id="reg-btn">Create Account</button>
   </div>
 </div>
 
-<!-- BANNER -->
 <div id="banner-wrap" style="position:relative;height:68px;overflow:hidden;border-bottom:2px solid var(--g);background:var(--g3)">
-  <div id="banner-inner" style="width:100%;height:100%;transition:opacity .4s"></div>
-  <button onclick="bannerStep(-1)" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:4px;padding:2px 9px;font-size:18px;cursor:pointer">‹</button>
-  <button onclick="bannerStep(1)"  style="position:absolute;right:28px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:4px;padding:2px 9px;font-size:18px;cursor:pointer">›</button>
+  <div id="banner-inner" style="width:100%;height:100%"></div>
+  <button id="ban-prev" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:4px;padding:2px 9px;font-size:18px;cursor:pointer">&#8249;</button>
+  <button id="ban-next" style="position:absolute;right:28px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:4px;padding:2px 9px;font-size:18px;cursor:pointer">&#8250;</button>
   <div id="banner-dots" style="position:absolute;bottom:5px;right:8px;display:flex;gap:4px"></div>
 </div>
 
-<!-- NAV -->
 <nav style="background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;flex-wrap:wrap;position:sticky;top:0;z-index:100">
-  <div onclick="setPage('forum')" style="display:flex;align-items:center;gap:9px;padding:8px 0;margin-right:14px;cursor:pointer;flex-shrink:0">
+  <div id="logo" style="display:flex;align-items:center;gap:9px;padding:8px 0;margin-right:14px;cursor:pointer;flex-shrink:0">
     <div style="width:30px;height:30px;background:var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🎯</div>
     <div><div style="font-weight:900;color:var(--g4);font-size:14px;line-height:1">AirGun Oregon</div><div class="sub" style="font-size:10px">PRO Platform</div></div>
   </div>
   <div id="nav-links" style="display:flex;flex:1;flex-wrap:wrap"></div>
   <div style="display:flex;gap:6px;padding:6px 0;flex-shrink:0">
-    <button id="theme-btn" class="btn-ghost btn-sm" onclick="toggleTheme()">🌙</button>
-    <button id="n-login" class="btn-ghost btn-sm" onclick="openModal('login-modal')">Login</button>
-    <button id="n-reg"   class="btn btn-sm"        onclick="openModal('reg-modal')">Register</button>
+    <button id="theme-btn" class="btn-ghost btn-sm">🌙</button>
+    <button id="n-login" class="btn-ghost btn-sm">Login</button>
+    <button id="n-reg" class="btn btn-sm">Register</button>
   </div>
 </nav>
 
@@ -127,535 +124,456 @@ canvas{display:block}
 
 <footer style="border-top:1px solid var(--border);padding:16px 24px;text-align:center;color:var(--sub);font-size:12px;margin-top:40px">
   🎯 AirGun Oregon · For informational use only · Always follow local laws · © 2025
-  &nbsp;·&nbsp;<a href="#" onclick="setPage('legal')">Terms &amp; Legal</a>
 </footer>
 
 <div id="toast" style="position:fixed;bottom:22px;right:22px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none"></div>
 
 <script>
 'use strict';
-
-// ══════════════════════════════════════════════════════════════════════════
-// STATE — single declaration, no duplicates
-// ══════════════════════════════════════════════════════════════════════════
-let PAGE    = 'forum';
-let LIGHT   = false;
-let LEGAL   = false;
-let CU      = null;
-let FV      = 'cats';
-let FCAT    = null;
-let FTH     = null;
-let BS_TAB  = 'trajectory';
-let FPS_STR = '870,865,872,868,875,869,873,867,871,870';
-let BS_DATA = [];
-let bannerIdx = 0;
-let BS = { cal:0.22, fps:870, gr:18.13, bc:0.031, sh:1.5, maxD:100, zeroD:40, kz:2.0 };
-let AE = { tankVol:480, startPSI:3625, endPSI:2175, regPSI:2030, plenumCC:72, cal:0.30, barrelMM:600, regulated:true, showAdv:false };
-
-// ══════════════════════════════════════════════════════════════════════════
-// STATIC DATA
-// ══════════════════════════════════════════════════════════════════════════
-let BANNERS = [
+var PAGE='forum',LIGHT=false,LEGAL=false,CU=null;
+var FV='cats',FCAT=null,FTH=null;
+var BS_TAB='trajectory',FPS_STR='870,865,872,868,875,869,873,867,871,870';
+var BS_DATA=[];
+var bannerIdx=0;
+var BS={cal:0.22,fps:870,gr:18.13,bc:0.031,sh:1.5,maxD:100,zeroD:40,kz:2.0};
+var AE={regulated:null,tankVol:null,startPSI:null,endPSI:null,regPSI:null,plenumCC:null,cal:null,barrelMM:null,showAdv:false};
+var BANNERS=[
   {label:'AirGun Oregon PRO',text:'🎯  AirGun Oregon — The Premier Airgun Community Platform',link:'#',bg:'#004d22',fg:'#00c957',active:true,imp:0},
   {label:'2025 Championship',text:'🏆  2025 Oregon Field Target Championship — Register by July 31',link:'#',bg:'#007a36',fg:'#e8f5ed',active:true,imp:0},
-  {label:'H&N Pellets',      text:'💨  H&N Pellets — Official Sponsor of AirGun Oregon',link:'#',bg:'#003d1a',fg:'#00c957',active:true,imp:0},
-  {label:'AirForce Airguns', text:'🔫  AirForce Airguns — Precision PCP Rifles · Shop Now',link:'#',bg:'#004d22',fg:'#ffffff',active:true,imp:0},
+  {label:'H&N Pellets',text:'💨  H&N Pellets — Official Sponsor of AirGun Oregon',link:'#',bg:'#003d1a',fg:'#00c957',active:true,imp:0},
+  {label:'AirForce Airguns',text:'🔫  AirForce Airguns — Precision PCP Rifles · Shop Now',link:'#',bg:'#004d22',fg:'#ffffff',active:true,imp:0}
 ];
-const CATS = [
-  {id:1,name:'General Discussion',  icon:'💬',desc:'Anything airgun related',         threads:142,posts:1847},
-  {id:2,name:'Rifles & Pistols',    icon:'🔫',desc:'Hardware, reviews, comparisons',  threads:89, posts:1203},
-  {id:3,name:'Ballistics & Tuning', icon:'📐',desc:'Data, BC, velocity, pellets',     threads:67, posts:894},
-  {id:4,name:'Competition',         icon:'🏆',desc:'Field target, benchrest, results',threads:45, posts:612},
-  {id:5,name:'Gear & Accessories',  icon:'🔧',desc:'Scopes, mounts, pumps, tanks',    threads:78, posts:1021},
-  {id:6,name:'Buy / Sell / Trade',  icon:'💰',desc:'Community marketplace',           threads:34, posts:445},
+var CATS=[
+  {id:1,name:'General Discussion',icon:'💬',desc:'Anything airgun related',threads:142,posts:1847},
+  {id:2,name:'Rifles & Pistols',icon:'🔫',desc:'Hardware, reviews, comparisons',threads:89,posts:1203},
+  {id:3,name:'Ballistics & Tuning',icon:'📐',desc:'Data, BC, velocity, pellets',threads:67,posts:894},
+  {id:4,name:'Competition',icon:'🏆',desc:'Field target, benchrest, results',threads:45,posts:612},
+  {id:5,name:'Gear & Accessories',icon:'🔧',desc:'Scopes, mounts, pumps, tanks',threads:78,posts:1021},
+  {id:6,name:'Buy / Sell / Trade',icon:'💰',desc:'Community marketplace',threads:34,posts:445}
 ];
-let THREADS = [
-  {id:1,cat:1,title:'Welcome to AirGun Oregon PRO!',author:'admin',replies:23,views:1204,pinned:true,time:'2h ago',
-   posts:[{id:1,author:'admin',body:'Welcome to the official AirGun Oregon community!',time:'2h ago',votes:15,reports:[],deleted:false},
-          {id:2,author:'user', body:'Amazing platform — the ballistics calculator is outstanding.',time:'1h ago',votes:8,reports:[],deleted:false}]},
-  {id:2,cat:2,title:'FX Impact M3 vs Daystate Pulsar — Full Comparison',author:'user',replies:41,views:892,pinned:false,time:'4h ago',
-   posts:[{id:1,author:'user',body:'After 6 months: FX wins on tunability, Daystate on out-of-box accuracy.',time:'4h ago',votes:12,reports:[],deleted:false}]},
-  {id:3,cat:3,title:'Optimal BC for .22 slugs at 900fps',author:'mod',replies:18,views:456,pinned:false,time:'1d ago',
-   posts:[{id:1,author:'mod',body:'25gr .22 slug with BC 0.095 gives the flattest trajectory to 80yd at 900fps.',time:'1d ago',votes:19,reports:[],deleted:false}]},
-  {id:4,cat:4,title:'Oregon FT Championship 2025 — Official Results',author:'admin',replies:56,views:2103,pinned:true,time:'3d ago',
-   posts:[{id:1,author:'admin',body:'Congratulations to all participants! Final standings are posted.',time:'3d ago',votes:34,reports:[],deleted:false}]},
+var THREADS=[
+  {id:1,cat:1,title:'Welcome to AirGun Oregon PRO!',author:'admin',replies:23,views:1204,pinned:true,time:'2h ago',posts:[{id:1,author:'admin',body:'Welcome to the official AirGun Oregon community!',time:'2h ago',votes:15,reports:[],deleted:false},{id:2,author:'user',body:'Amazing platform — the ballistics calculator is outstanding.',time:'1h ago',votes:8,reports:[],deleted:false}]},
+  {id:2,cat:2,title:'FX Impact M3 vs Daystate Pulsar — Full Comparison',author:'user',replies:41,views:892,pinned:false,time:'4h ago',posts:[{id:1,author:'user',body:'After 6 months: FX wins on tunability, Daystate on out-of-box accuracy.',time:'4h ago',votes:12,reports:[],deleted:false}]},
+  {id:3,cat:3,title:'Optimal BC for .22 slugs at 900fps',author:'mod',replies:18,views:456,pinned:false,time:'1d ago',posts:[{id:1,author:'mod',body:'25gr .22 slug with BC 0.095 gives the flattest trajectory to 80yd at 900fps.',time:'1d ago',votes:19,reports:[],deleted:false}]},
+  {id:4,cat:4,title:'Oregon FT Championship 2025 — Official Results',author:'admin',replies:56,views:2103,pinned:true,time:'3d ago',posts:[{id:1,author:'admin',body:'Congratulations to all participants! Final standings are posted.',time:'3d ago',votes:34,reports:[],deleted:false}]}
 ];
-let SESSIONS = [
-  {id:1,date:'2025-06-10',dist:50, shots:30,score:87,notes:"Wind 9 o'clock, JSB .22"},
-  {id:2,date:'2025-06-12',dist:75, shots:30,score:91,notes:'Calm, best session yet'},
-  {id:3,date:'2025-06-15',dist:100,shots:30,score:78,notes:'New scope, dialing in'},
+var SESSIONS=[
+  {id:1,date:'2025-06-10',dist:50,shots:30,score:87,notes:"Wind 9 o'clock, JSB .22"},
+  {id:2,date:'2025-06-12',dist:75,shots:30,score:91,notes:'Calm, best session yet'},
+  {id:3,date:'2025-06-15',dist:100,shots:30,score:78,notes:'New scope, dialing in'}
 ];
-let USERS = {
+var USERS={
   admin:{name:'admin',pass:'admin',role:'admin',rep:500,joined:'2024-01-01',banned:false},
-  mod:  {name:'mod',  pass:'mod',  role:'mod',  rep:150,joined:'2024-03-15',banned:false},
-  user: {name:'user', pass:'user', role:'user', rep:42, joined:'2025-01-10',banned:false},
+  mod:{name:'mod',pass:'mod',role:'mod',rep:150,joined:'2024-03-15',banned:false},
+  user:{name:'user',pass:'user',role:'user',rep:42,joined:'2025-01-10',banned:false}
 };
 
-// ══════════════════════════════════════════════════════════════════════════
-// LEGAL
-// ══════════════════════════════════════════════════════════════════════════
-function checkBoxes(){const ok=document.getElementById('ck1').checked;const btn=document.getElementById('accept-btn');btn.disabled=!ok;btn.style.opacity=ok?'1':'.35';}
-function acceptLegal(){LEGAL=true;document.getElementById('legal-modal').classList.add('hidden');renderAll();}
-
-// ══════════════════════════════════════════════════════════════════════════
-// MODALS / AUTH / TOAST / THEME
-// ══════════════════════════════════════════════════════════════════════════
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg,type){var el=document.getElementById('toast');el.textContent=msg;el.style.background=type==='err'?'#ef4444':type==='warn'?'#f59e0b':'#009A44';el.style.color=type==='warn'?'#000':'#fff';el.style.opacity='1';setTimeout(function(){el.style.opacity='0';},2800);}
 function openModal(id){document.getElementById(id).classList.remove('hidden');}
 function closeModal(id){document.getElementById(id).classList.add('hidden');}
-function doLogin(){const u=document.getElementById('l-user').value.trim(),p=document.getElementById('l-pass').value;if(USERS[u]&&USERS[u].pass===p&&!USERS[u].banned){CU=USERS[u];closeModal('login-modal');renderAll();toast('Welcome back, '+u+'!');}else toast('Invalid credentials','err');}
+
+document.getElementById('ck1').addEventListener('change',function(){var btn=document.getElementById('accept-btn');btn.disabled=!this.checked;btn.style.opacity=this.checked?'1':'.35';});
+document.getElementById('accept-btn').addEventListener('click',function(){LEGAL=true;document.getElementById('legal-modal').classList.add('hidden');renderAll();});
+document.getElementById('login-close').addEventListener('click',function(){closeModal('login-modal');});
+document.getElementById('reg-close').addEventListener('click',function(){closeModal('reg-modal');});
+document.getElementById('login-btn').addEventListener('click',function(){
+  var u=document.getElementById('l-user').value.trim(),p=document.getElementById('l-pass').value;
+  if(USERS[u]&&USERS[u].pass===p&&!USERS[u].banned){CU=USERS[u];closeModal('login-modal');renderAll();toast('Welcome back, '+u+'!');}
+  else toast('Invalid credentials','err');
+});
+document.getElementById('reg-btn').addEventListener('click',function(){
+  var u=document.getElementById('r-user').value.trim(),e=document.getElementById('r-email').value.trim(),p=document.getElementById('r-pass').value,t=document.getElementById('r-terms').checked;
+  if(!u||!e||p.length<8){toast('Fill all fields (password ≥8 chars)','warn');return;}
+  if(!t){toast('Accept the terms','warn');return;}
+  if(USERS[u]){toast('Username taken','err');return;}
+  USERS[u]={name:u,pass:p,role:'user',rep:0,joined:new Date().toISOString().slice(0,10),banned:false};
+  CU=USERS[u];closeModal('reg-modal');renderAll();toast('Welcome, '+u+'!');
+});
 function doLogout(){CU=null;renderAll();toast('Logged out');}
-function doRegister(){const u=document.getElementById('r-user').value.trim(),e=document.getElementById('r-email').value.trim(),p=document.getElementById('r-pass').value,t=document.getElementById('r-terms').checked;if(!u||!e||p.length<8){toast('Fill all fields (password ≥8 chars)','warn');return;}if(!t){toast('Accept the terms','warn');return;}if(USERS[u]){toast('Username taken','err');return;}USERS[u]={name:u,pass:p,role:'user',rep:0,joined:new Date().toISOString().slice(0,10),banned:false};CU=USERS[u];closeModal('reg-modal');renderAll();toast('Welcome, '+u+'!');}
-function toast(msg,type){const el=document.getElementById('toast');el.textContent=msg;el.style.background=type==='err'?'#ef4444':type==='warn'?'#f59e0b':'#009A44';el.style.color=type==='warn'?'#000':'#fff';el.style.opacity='1';setTimeout(()=>el.style.opacity='0',2800);}
-function toggleTheme(){LIGHT=!LIGHT;document.body.toggleAttribute('data-light',LIGHT);document.getElementById('theme-btn').textContent=LIGHT?'☀️':'🌙';}
+document.getElementById('theme-btn').addEventListener('click',function(){LIGHT=!LIGHT;document.body.toggleAttribute('data-light',LIGHT);this.textContent=LIGHT?'☀️':'🌙';});
 
-// ══════════════════════════════════════════════════════════════════════════
-// BANNER
-// ══════════════════════════════════════════════════════════════════════════
-function renderBanner(){const active=BANNERS.filter(b=>b.active);if(!active.length)return;const b=active[bannerIdx%active.length];b.imp++;document.getElementById('banner-inner').innerHTML=`<a href="${b.link}" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:${b.bg};color:${b.fg};font-size:clamp(12px,2vw,17px);font-weight:700;text-decoration:none;padding:0 50px">${b.text}</a>`;document.getElementById('banner-dots').innerHTML=active.map((_,i)=>`<div onclick="bannerGo(${i})" style="width:6px;height:6px;border-radius:50%;background:${i===bannerIdx%active.length?'var(--g4)':'var(--border)'};cursor:pointer"></div>`).join('');}
-function bannerGo(i){bannerIdx=i;renderBanner();}
-function bannerStep(d){bannerIdx+=d;renderBanner();}
-setInterval(()=>{bannerIdx++;renderBanner();},5000);
+function renderBanner(){
+  var active=BANNERS.filter(function(b){return b.active;});
+  if(!active.length)return;
+  var b=active[bannerIdx%active.length];b.imp++;
+  document.getElementById('banner-inner').innerHTML='<a href="'+b.link+'" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:'+b.bg+';color:'+b.fg+';font-size:clamp(12px,2vw,17px);font-weight:700;text-decoration:none;padding:0 50px">'+b.text+'</a>';
+  document.getElementById('banner-dots').innerHTML=active.map(function(_,i){return'<div style="width:6px;height:6px;border-radius:50%;background:'+(i===bannerIdx%active.length?'var(--g4)':'var(--border)')+';cursor:pointer" data-bi="'+i+'"></div>';}).join('');
+  document.querySelectorAll('[data-bi]').forEach(function(el){el.addEventListener('click',function(){bannerIdx=parseInt(this.dataset.bi);renderBanner();});});
+}
+document.getElementById('ban-prev').addEventListener('click',function(){bannerIdx--;renderBanner();});
+document.getElementById('ban-next').addEventListener('click',function(){bannerIdx++;renderBanner();});
+setInterval(function(){bannerIdx++;renderBanner();},5000);
+document.getElementById('logo').addEventListener('click',function(){setPage('forum');});
 
-// ══════════════════════════════════════════════════════════════════════════
-// NAV & ROUTER
-// ══════════════════════════════════════════════════════════════════════════
-const NAV_TABS=[['forum','💬 Forum'],['ballistics','📐 Ballistics'],['aireff','💨 Air Efficiency'],['training','🎯 Training'],['admin','🔧 Admin'],['legal','⚖️ Legal']];
+var NAV_TABS=[['forum','💬 Forum'],['ballistics','📐 Ballistics'],['aireff','💨 Air Efficiency'],['training','🎯 Training'],['admin','🔧 Admin'],['legal','⚖️ Legal']];
 function renderNav(){
-  document.getElementById('nav-links').innerHTML=NAV_TABS.map(([p,l])=>`<button class="nav-btn${PAGE===p?' active':''}" onclick="setPage('${p}')">${l}</button>`).join('');
-  const nl=document.getElementById('n-login'),nr=document.getElementById('n-reg');
-  if(CU){nl.textContent='👤 '+CU.name+' ('+CU.role+')';nl.onclick=()=>toast(CU.name+' · '+CU.role+' · Rep: '+CU.rep);nr.textContent='Logout';nr.className='btn-ghost btn-sm';nr.onclick=doLogout;}
-  else{nl.textContent='Login';nl.onclick=()=>openModal('login-modal');nr.textContent='Register';nr.className='btn btn-sm';nr.onclick=()=>openModal('reg-modal');}
+  document.getElementById('nav-links').innerHTML=NAV_TABS.map(function(t){return'<button class="nav-btn'+(PAGE===t[0]?' active':'')+'" data-page="'+t[0]+'">'+t[1]+'</button>';}).join('');
+  document.querySelectorAll('[data-page]').forEach(function(el){el.addEventListener('click',function(){setPage(this.dataset.page);});});
+  var nl=document.getElementById('n-login'),nr=document.getElementById('n-reg');
+  if(CU){nl.textContent='👤 '+CU.name+' ('+CU.role+')';nl.onclick=function(){toast(CU.name+' · '+CU.role+' · Rep: '+CU.rep);};nr.textContent='Logout';nr.className='btn-ghost btn-sm';nr.onclick=doLogout;}
+  else{nl.textContent='Login';nl.onclick=function(){openModal('login-modal');};nr.textContent='Register';nr.className='btn btn-sm';nr.onclick=function(){openModal('reg-modal');};}
 }
 function setPage(p){if(!LEGAL){toast('Accept the Terms of Use to continue','warn');return;}PAGE=p;renderAll();}
 function renderAll(){
-  renderNav();
-  if(!LEGAL)return;
-  const m=document.getElementById('main');
-  if     (PAGE==='forum')      m.innerHTML=forumHTML();
-  else if(PAGE==='ballistics') {m.innerHTML=ballisticsHTML();setTimeout(bsInit,60);}
-  else if(PAGE==='aireff')     {m.innerHTML=airEffHTML();   setTimeout(aeUpdate,60);}
-  else if(PAGE==='training')   {m.innerHTML=trainingHTML(); setTimeout(trChart,60);}
-  else if(PAGE==='admin')      m.innerHTML=adminHTML();
-  else if(PAGE==='legal')      m.innerHTML=legalHTML();
+  renderNav();if(!LEGAL)return;
+  var m=document.getElementById('main');
+  if(PAGE==='forum'){m.innerHTML=forumHTML();bindForum();}
+  else if(PAGE==='ballistics'){m.innerHTML=ballisticsHTML();bindBallistics();}
+  else if(PAGE==='aireff'){m.innerHTML=airEffHTML();bindAirEff();}
+  else if(PAGE==='training'){m.innerHTML=trainingHTML();bindTraining();}
+  else if(PAGE==='admin'){m.innerHTML=adminHTML();bindAdmin();}
+  else if(PAGE==='legal'){m.innerHTML=legalHTML();}
 }
 
-// ══════════════════════════════════════════════════════════════════════════
-// BALLISTICS ENGINE
-// ══════════════════════════════════════════════════════════════════════════
-// ChairGun exponential retardation model (industry standard for subsonic airguns)
-// v(x)=MV*exp(-x/(8000*BC))  t(x)=(24000*BC/MV)*(exp(x/(8000*BC))-1)
-// drop=0.5*386.09*t²  E=(gr*fps²)/450240
+function muzzleEnergy(fps,gr){if(!fps||!gr||fps<=0||gr<=0)return 0;return(gr*fps*fps)/450240;}
 function computeTraj(cfg){
-  const{fps:MV,gr,bc:BC,sh,maxD,zeroD}=cfg;
+  var MV=cfg.fps,gr=cfg.gr,BC=cfg.bc,sh=cfg.sh,maxD=cfg.maxD,zeroD=cfg.zeroD;
   if(!MV||!gr||!BC||!sh||!maxD||!zeroD)return[];
-  if([MV,gr,BC,sh,maxD,zeroD].some(v=>isNaN(v)||v<=0))return[];
+  if([MV,gr,BC,sh,maxD,zeroD].some(function(v){return isNaN(v)||v<=0;}))return[];
   if(zeroD>=maxD)return[];
-  const K=8000*BC,T=24000*BC;
-  const vel=x=>MV*Math.exp(-x/K);
-  const tof=x=>(T/MV)*(Math.exp(x/K)-1);
-  const rawDrop=x=>0.5*386.09*Math.pow(tof(x),2);
-  const dropZ=rawDrop(zeroD);
-  const losSlope=(dropZ+sh)/zeroD;
-  const step=maxD/60,result=[];
-  for(let x=0;x<=maxD+0.01;x+=step){
-    const v=vel(x),poi=losSlope*x-sh-rawDrop(x);
-    result.push({d:Math.round(x),drop:parseFloat(poi.toFixed(3)),fps:parseFloat(v.toFixed(1)),energy:parseFloat(((gr*v*v)/450240).toFixed(2))});
-  }
+  var K=8000*BC,T=24000*BC;
+  function vel(x){return MV*Math.exp(-x/K);}
+  function tof(x){return(T/MV)*(Math.exp(x/K)-1);}
+  function rawDrop(x){return 0.5*386.09*Math.pow(tof(x),2);}
+  var dropZ=rawDrop(zeroD),losSlope=(dropZ+sh)/zeroD,step=maxD/60,result=[];
+  for(var x=0;x<=maxD+0.01;x+=step){var v=vel(x),poi=losSlope*x-sh-rawDrop(x);result.push({d:Math.round(x),drop:parseFloat(poi.toFixed(3)),fps:parseFloat(v.toFixed(1)),energy:parseFloat(((gr*v*v)/450240).toFixed(2))});}
   return result;
 }
-function muzzleEnergy(fps,gr){if(!fps||!gr||fps<=0||gr<=0)return'0.00';return((gr*fps*fps)/450240).toFixed(2);}
 
-// ══════════════════════════════════════════════════════════════════════════
-// BALLISTICS PAGE
-// ══════════════════════════════════════════════════════════════════════════
-function bsField(k,lbl,unit,ph,min,max,step){return`<div class="mb8"><label class="lbl">${lbl}${unit?' ('+unit+')':''}</label><input type="number" min="${min}" max="${max}" step="${step}" value="${BS[k]}" placeholder="${ph}" oninput="bsInput('${k}',this.value)"/></div>`;}
-function ballisticsHTML(){return`
-<div class="mb16"><h2 class="accent" style="font-size:20px">📐 Ballistics Command Center</h2><p class="sub" style="font-size:12px;margin-top:3px">ChairGun exponential retardation model · Real-time output</p></div>
-<div style="display:grid;grid-template-columns:250px 1fr;gap:14px" class="bl">
-  <div>
-    <div class="card mb12">
-      <div class="fw7 accent mb12" style="font-size:13px">⚙️ Inputs</div>
-      ${bsField('cal','Caliber','inches','e.g. 0.22',0.10,1.00,0.001)}
-      ${bsField('fps','Muzzle Velocity','fps','e.g. 870',1,2000,1)}
-      ${bsField('gr','Projectile Weight','grains','e.g. 18.13',0.1,200,0.01)}
-      ${bsField('bc','Ballistic Coeff.','lbs/in²','e.g. 0.031',0.001,0.500,0.001)}
-      ${bsField('sh','Scope Height','inches','e.g. 1.5',0.1,6,0.1)}
-      ${bsField('zeroD','Zero Distance','yards','e.g. 40',5,300,1)}
-      ${bsField('maxD','Max Distance','yards','e.g. 100',10,500,1)}
-      ${bsField('kz','Kill Zone','inches','e.g. 2',0.25,12,0.25)}
-      <div style="background:var(--bg);border-radius:8px;padding:9px;font-size:11px;color:var(--sub);line-height:1.8"><strong style="color:var(--text)">BC guide (GA, lbs/in²):</strong><br>.177 dome ≈0.012–0.016 · .22 dome ≈0.028–0.035<br>.25 dome ≈0.038–0.046 · .22 slug ≈0.060–0.095<br>.25 slug ≈0.100–0.140 · .30 slug ≈0.140–0.200</div>
-    </div>
-    <div class="card mb12" id="energy-card"></div>
-    <div class="card" id="zero-card"></div>
-  </div>
-  <div>
-    <div class="grid4 mb12" id="stat-cards"></div>
-    <div class="card mb12" style="position:relative">
-      <div class="between mb10" style="flex-wrap:wrap;gap:8px">
-        <span class="fw7 accent" style="font-size:13px" id="chart-title">Trajectory — Drop vs Distance</span>
-        <div class="tab-bar" style="margin:0">
-          <button class="tab${BS_TAB==='trajectory'?' active':''}" onclick="setBsTab('trajectory')">Trajectory</button>
-          <button class="tab${BS_TAB==='energy'?' active':''}" onclick="setBsTab('energy')">Energy</button>
-        </div>
-      </div>
-      <canvas id="bs-canvas" height="270" style="width:100%;display:block"></canvas>
-      <div id="bs-tip" class="tip hidden"></div>
-    </div>
-    <div class="card mb12" id="fps-panel">
-      <div class="fw7 accent mb10" style="font-size:13px">🔫 Shot String Analyzer</div>
-      <div class="grid2"><div><label class="lbl">FPS readings (comma-separated)</label><textarea id="fps-str" rows="4" oninput="fpsPanelUpdate()">${FPS_STR}</textarea></div><div id="fps-stats"></div></div>
-      <div id="fps-bars" class="mt8"></div>
-    </div>
-    <div class="card"><div class="fw7 accent mb10" style="font-size:13px">📊 Data Table</div>
-      <div style="overflow-x:auto;max-height:220px;overflow-y:auto"><table style="font-size:12px;width:100%;border-collapse:collapse">
-        <thead><tr class="sub"><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Dist</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Drop</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">FPS</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Energy</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Status</th></tr></thead>
-        <tbody id="bs-tbody"></tbody>
-      </table></div>
-    </div>
-  </div>
-</div>`;}
-function bsInit(){bsUpdate();const cv=document.getElementById('bs-canvas');if(cv){cv.addEventListener('mousemove',bsTip);cv.addEventListener('mouseleave',()=>{const t=document.getElementById('bs-tip');if(t)t.classList.add('hidden');});}}
-function bsInput(k,v){BS[k]=parseFloat(v)||BS[k];bsUpdate();}
-function setBsTab(t){BS_TAB=t;document.querySelectorAll('.tab').forEach(el=>{el.className='tab'+(el.textContent.toLowerCase().includes(t.slice(0,4))?' active':'');});const tc=document.getElementById('chart-title');if(tc)tc.textContent=t==='energy'?'Energy (ft·lbs) vs Distance':'Trajectory — Drop vs Distance';drawChart();}
+function ballisticsHTML(){
+  function f(k,lbl,unit,ph,min,max,step){return'<div class="mb8"><label class="lbl">'+lbl+(unit?' ('+unit+')':'')+'</label><input type="number" min="'+min+'" max="'+max+'" step="'+step+'" value="'+BS[k]+'" placeholder="'+ph+'" data-bs="'+k+'"/></div>';}
+  return'<div class="mb16"><h2 class="accent" style="font-size:20px">📐 Ballistics Command Center</h2><p class="sub" style="font-size:12px;margin-top:3px">ChairGun exponential retardation model · Real-time output</p></div>'+
+  '<div style="display:grid;grid-template-columns:250px 1fr;gap:14px" class="bl"><div>'+
+  '<div class="card mb12"><div class="fw7 accent mb12" style="font-size:13px">⚙️ Inputs</div>'+
+  f('cal','Caliber','inches','e.g. 0.22',0.10,1.00,0.001)+f('fps','Muzzle Velocity','fps','e.g. 870',1,2000,1)+
+  f('gr','Projectile Weight','grains','e.g. 18.13',0.1,200,0.01)+f('bc','Ballistic Coeff.','lbs/in²','e.g. 0.031',0.001,0.500,0.001)+
+  f('sh','Scope Height','inches','e.g. 1.5',0.1,6,0.1)+f('zeroD','Zero Distance','yards','e.g. 40',5,300,1)+
+  f('maxD','Max Distance','yards','e.g. 100',10,500,1)+f('kz','Kill Zone','inches','e.g. 2',0.25,12,0.25)+
+  '<div style="background:var(--bg);border-radius:8px;padding:9px;font-size:11px;color:var(--sub);line-height:1.8"><strong style="color:var(--text)">BC guide:</strong><br>.177 dome≈0.012–0.016 · .22 dome≈0.028–0.035<br>.25 dome≈0.038–0.046 · .22 slug≈0.060–0.095<br>.25 slug≈0.100–0.140 · .30 slug≈0.140–0.200</div></div>'+
+  '<div class="card mb12" id="energy-card"></div><div class="card" id="zero-card"></div></div>'+
+  '<div><div class="grid4 mb12" id="stat-cards"></div>'+
+  '<div class="card mb12" style="position:relative"><div class="between mb10" style="flex-wrap:wrap;gap:8px"><span class="fw7 accent" style="font-size:13px" id="chart-title">Trajectory — Drop vs Distance</span>'+
+  '<div class="tab-bar" style="margin:0"><button class="tab active" data-bstab="trajectory">Trajectory</button><button class="tab" data-bstab="energy">Energy</button></div></div>'+
+  '<canvas id="bs-canvas" height="270" style="width:100%;display:block"></canvas><div id="bs-tip" class="tip hidden"></div></div>'+
+  '<div class="card mb12"><div class="fw7 accent mb10" style="font-size:13px">🔫 Shot String Analyzer</div>'+
+  '<div class="grid2"><div><label class="lbl">FPS readings (comma-separated)</label><textarea id="fps-str" rows="4">'+FPS_STR+'</textarea></div><div id="fps-stats"></div></div><div id="fps-bars" class="mt8"></div></div>'+
+  '<div class="card"><div class="fw7 accent mb10" style="font-size:13px">📊 Data Table</div>'+
+  '<div style="overflow-x:auto;max-height:220px;overflow-y:auto"><table style="font-size:12px;width:100%;border-collapse:collapse">'+
+  '<thead><tr class="sub"><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Dist</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Drop</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">FPS</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Energy</th><th style="padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card)">Status</th></tr></thead>'+
+  '<tbody id="bs-tbody"></tbody></table></div></div></div></div>';
+}
+function bindBallistics(){
+  document.querySelectorAll('[data-bs]').forEach(function(el){el.addEventListener('input',function(){BS[this.dataset.bs]=parseFloat(this.value)||BS[this.dataset.bs];bsUpdate();});});
+  document.querySelectorAll('[data-bstab]').forEach(function(el){el.addEventListener('click',function(){BS_TAB=this.dataset.bstab;document.querySelectorAll('[data-bstab]').forEach(function(t){t.className='tab';});this.className='tab active';var tc=document.getElementById('chart-title');if(tc)tc.textContent=BS_TAB==='energy'?'Energy (ft·lbs) vs Distance':'Trajectory — Drop vs Distance';drawChart();});});
+  var cv=document.getElementById('bs-canvas');
+  if(cv){cv.addEventListener('mousemove',bsTip);cv.addEventListener('mouseleave',function(){var t=document.getElementById('bs-tip');if(t)t.classList.add('hidden');});}
+  var fpsEl=document.getElementById('fps-str');if(fpsEl)fpsEl.addEventListener('input',function(){FPS_STR=this.value;fpsPanelUpdate();});
+  bsUpdate();
+}
 function bsUpdate(){
   if(PAGE!=='ballistics')return;
   BS_DATA=computeTraj(BS);
-  const me=muzzleEnergy(BS.fps,BS.gr),meN=parseFloat(me),half=BS.kz/2;
-  const sweet=BS_DATA.filter(p=>Math.abs(p.drop)<=half);
-  const maxPt=BS_DATA.reduce((a,b)=>b.drop>a.drop?b:a,{drop:-Infinity,d:0});
-  const sc=document.getElementById('stat-cards');
-  if(sc)sc.innerHTML=[['⚡',me+' ft·lb','Muzzle Energy'],['📈',(maxPt.drop>0?'+':'')+maxPt.drop.toFixed(2)+'"','Max Height'],['🎯',sweet.length?sweet[sweet.length-1].d+' yd':'N/A','Far Zero'],['✅',sweet.length?sweet[0].d+'–'+sweet[sweet.length-1].d+' yd':'—','±'+half+'" Sweet Zone']].map(([i,v,l])=>`<div class="sc"><div style="font-size:20px">${i}</div><div class="sv" style="font-size:16px">${v}</div><div class="sl">${l}</div></div>`).join('');
-  const ec=document.getElementById('energy-card');
-  if(ec){const cat=meN<12?'🎯 Plinking':meN<25?'🐦 Small game':meN<60?'🐇 Mid-size game':'🦌 Large game';ec.innerHTML=`<div class="fw7 accent mb8" style="font-size:13px">⚡ Muzzle Energy</div><div style="font-size:36px;font-weight:900;color:var(--g4);line-height:1">${me}</div><div class="sub" style="font-size:12px;margin-top:2px">ft·lbs</div><div style="margin-top:8px;display:inline-block;padding:4px 12px;background:var(--g3);border-radius:20px;font-size:12px;color:var(--g4)">${cat}</div>`;}
-  const zc=document.getElementById('zero-card');
-  if(zc)zc.innerHTML=`<div class="fw7 accent mb10" style="font-size:13px">🎯 Zero Optimizer</div><div class="grid2" style="gap:8px">${[['Near Zero',sweet.length?sweet[0].d+' yd':'—'],['Far Zero',sweet.length?sweet[sweet.length-1].d+' yd':'—'],['Max Height At',maxPt.d+' yd'],['Set Zero',BS.zeroD+' yd']].map(([l,v])=>`<div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px"><div style="font-size:17px;font-weight:900;color:var(--g4)">${v}</div><div class="sub" style="font-size:11px">${l}</div></div>`).join('')}</div>`;
+  var me=muzzleEnergy(BS.fps,BS.gr).toFixed(2),meN=parseFloat(me),half=BS.kz/2;
+  var sweet=BS_DATA.filter(function(p){return Math.abs(p.drop)<=half;});
+  var maxPt=BS_DATA.reduce(function(a,b){return b.drop>a.drop?b:a;},{drop:-Infinity,d:0});
+  var sc=document.getElementById('stat-cards');
+  if(sc)sc.innerHTML=[['⚡',me+' ft·lb','Muzzle Energy'],['📈',(maxPt.drop>0?'+':'')+maxPt.drop.toFixed(2)+'"','Max Height'],['🎯',sweet.length?sweet[sweet.length-1].d+' yd':'N/A','Far Zero'],['✅',sweet.length?sweet[0].d+'–'+sweet[sweet.length-1].d+' yd':'—','±'+half+'" Sweet Zone']].map(function(r){return'<div class="sc"><div style="font-size:20px">'+r[0]+'</div><div class="sv" style="font-size:16px">'+r[1]+'</div><div class="sl">'+r[2]+'</div></div>';}).join('');
+  var ec=document.getElementById('energy-card');
+  if(ec){var cat=meN<12?'🎯 Plinking':meN<25?'🐦 Small game':meN<60?'🐇 Mid-size game':'🦌 Large game';ec.innerHTML='<div class="fw7 accent mb8" style="font-size:13px">⚡ Muzzle Energy</div><div style="font-size:36px;font-weight:900;color:var(--g4);line-height:1">'+me+'</div><div class="sub" style="font-size:12px;margin-top:2px">ft·lbs</div><div style="margin-top:8px;display:inline-block;padding:4px 12px;background:var(--g3);border-radius:20px;font-size:12px;color:var(--g4)">'+cat+'</div>';}
+  var zc=document.getElementById('zero-card');
+  if(zc)zc.innerHTML='<div class="fw7 accent mb10" style="font-size:13px">🎯 Zero Optimizer</div><div class="grid2" style="gap:8px">'+[['Near Zero',sweet.length?sweet[0].d+' yd':'—'],['Far Zero',sweet.length?sweet[sweet.length-1].d+' yd':'—'],['Max Height At',maxPt.d+' yd'],['Set Zero',BS.zeroD+' yd']].map(function(r){return'<div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px"><div style="font-size:17px;font-weight:900;color:var(--g4)">'+r[1]+'</div><div class="sub" style="font-size:11px">'+r[0]+'</div></div>';}).join('')+'</div>';
   drawChart();updateTable();fpsPanelUpdate();
 }
 function drawChart(){
-  const canvas=document.getElementById('bs-canvas');if(!canvas||!BS_DATA.length)return;
-  const cssW=canvas.getBoundingClientRect().width,W=Math.max(Math.floor(cssW),300),H=canvas.height;
-  canvas.width=W;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
-  const isDark=!LIGHT,bg=isDark?'#0a1a0f':'#f0faf5',grid=isDark?'#1a3d25':'#b8dfc8',lbl=isDark?'#6dba8a':'#3a7a55';
-  const pad={top:22,right:28,bottom:46,left:58},cw=W-pad.left-pad.right,ch=H-pad.top-pad.bottom;
-  const isE=BS_TAB==='energy',yRaw=BS_DATA.map(p=>isE?p.energy:p.drop),xRaw=BS_DATA.map(p=>p.d);
-  const lineColor=isE?'#f59e0b':'#009A44',fillColor=isE?'rgba(245,158,11,.15)':'rgba(0,154,68,.15)';
-  const yAxisLabel=isE?'Energy (ft·lbs)':'Drop (inches)';
-  const yMin_r=Math.min(...yRaw),yMax_r=Math.max(...yRaw),yPad=Math.max((yMax_r-yMin_r)*.18,.5);
-  const yMin=yMin_r-yPad,yMax=yMax_r+yPad,xMin=xRaw[0],xMax=xRaw[xRaw.length-1];
-  const toX=v=>pad.left+((v-xMin)/(xMax-xMin))*cw,toY=v=>pad.top+(1-(v-yMin)/(yMax-yMin))*ch;
+  var canvas=document.getElementById('bs-canvas');if(!canvas||!BS_DATA.length)return;
+  var W=Math.max(Math.floor(canvas.getBoundingClientRect().width),300),H=canvas.height;
+  canvas.width=W;var ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  var isDark=!LIGHT,bg=isDark?'#0a1a0f':'#f0faf5',grid=isDark?'#1a3d25':'#b8dfc8',lbl=isDark?'#6dba8a':'#3a7a55';
+  var pad={top:22,right:28,bottom:46,left:58},cw=W-pad.left-pad.right,ch=H-pad.top-pad.bottom;
+  var isE=BS_TAB==='energy';
+  var yRaw=BS_DATA.map(function(p){return isE?p.energy:p.drop;}),xRaw=BS_DATA.map(function(p){return p.d;});
+  var lc=isE?'#f59e0b':'#009A44',fc=isE?'rgba(245,158,11,.15)':'rgba(0,154,68,.15)';
+  var yr=Math.min.apply(null,yRaw),yx=Math.max.apply(null,yRaw),yp=Math.max((yx-yr)*.18,.5);
+  var yMin=yr-yp,yMax=yx+yp,xMin=xRaw[0],xMax=xRaw[xRaw.length-1];
+  function toX(v){return pad.left+((v-xMin)/(xMax-xMin))*cw;}
+  function toY(v){return pad.top+(1-(v-yMin)/(yMax-yMin))*ch;}
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   ctx.strokeStyle=grid;ctx.lineWidth=1;
-  for(let i=0;i<=6;i++){const y=pad.top+(i/6)*ch;ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cw,y);ctx.stroke();}
-  const xT=Math.min(8,xRaw.length-1);
-  for(let i=0;i<=xT;i++){const xi=Math.round(i*(xRaw.length-1)/xT),x=toX(xRaw[xi]);ctx.beginPath();ctx.moveTo(x,pad.top);ctx.lineTo(x,pad.top+ch);ctx.stroke();}
-  if(!isE){
-    const kh=BS.kz/2;ctx.fillStyle='rgba(0,154,68,.10)';ctx.fillRect(pad.left,Math.min(toY(kh),toY(-kh)),cw,Math.abs(toY(-kh)-toY(kh)));
-    ctx.save();ctx.strokeStyle='rgba(0,201,87,.5)';ctx.lineWidth=1;ctx.setLineDash([6,4]);
-    [kh,-kh].forEach(v=>{ctx.beginPath();ctx.moveTo(pad.left,toY(v));ctx.lineTo(pad.left+cw,toY(v));ctx.stroke();});ctx.restore();
-    if(yMin<=0&&yMax>=0){const zy=toY(0);ctx.save();ctx.strokeStyle='#009A44';ctx.lineWidth=1.8;ctx.setLineDash([8,5]);ctx.beginPath();ctx.moveTo(pad.left,zy);ctx.lineTo(pad.left+cw,zy);ctx.stroke();ctx.restore();ctx.fillStyle='#009A44';ctx.font='bold 11px Inter,sans-serif';ctx.textAlign='left';ctx.fillText('Zero',pad.left+5,zy-5);}
-  }
-  ctx.save();ctx.beginPath();yRaw.forEach((y,i)=>{const px=toX(xRaw[i]),py=toY(y);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});ctx.lineTo(toX(xRaw[xRaw.length-1]),pad.top+ch);ctx.lineTo(toX(xRaw[0]),pad.top+ch);ctx.closePath();ctx.fillStyle=fillColor;ctx.fill();ctx.restore();
-  ctx.save();ctx.strokeStyle=lineColor;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.setLineDash([]);ctx.beginPath();yRaw.forEach((y,i)=>{const px=toX(xRaw[i]),py=toY(y);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});ctx.stroke();ctx.restore();
+  for(var i=0;i<=6;i++){var y=pad.top+(i/6)*ch;ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cw,y);ctx.stroke();}
+  var xT=Math.min(8,xRaw.length-1);
+  for(var j=0;j<=xT;j++){var xi=Math.round(j*(xRaw.length-1)/xT),x=toX(xRaw[xi]);ctx.beginPath();ctx.moveTo(x,pad.top);ctx.lineTo(x,pad.top+ch);ctx.stroke();}
+  if(!isE){var kh=BS.kz/2;ctx.fillStyle='rgba(0,154,68,.10)';ctx.fillRect(pad.left,Math.min(toY(kh),toY(-kh)),cw,Math.abs(toY(-kh)-toY(kh)));ctx.save();ctx.strokeStyle='rgba(0,201,87,.5)';ctx.lineWidth=1;ctx.setLineDash([6,4]);[kh,-kh].forEach(function(v){ctx.beginPath();ctx.moveTo(pad.left,toY(v));ctx.lineTo(pad.left+cw,toY(v));ctx.stroke();});ctx.restore();if(yMin<=0&&yMax>=0){var zy=toY(0);ctx.save();ctx.strokeStyle='#009A44';ctx.lineWidth=1.8;ctx.setLineDash([8,5]);ctx.beginPath();ctx.moveTo(pad.left,zy);ctx.lineTo(pad.left+cw,zy);ctx.stroke();ctx.restore();ctx.fillStyle='#009A44';ctx.font='bold 11px Inter,sans-serif';ctx.textAlign='left';ctx.fillText('Zero',pad.left+5,zy-5);}}
+  ctx.save();ctx.beginPath();yRaw.forEach(function(yv,ii){var px=toX(xRaw[ii]),py=toY(yv);ii===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});ctx.lineTo(toX(xRaw[xRaw.length-1]),pad.top+ch);ctx.lineTo(toX(xRaw[0]),pad.top+ch);ctx.closePath();ctx.fillStyle=fc;ctx.fill();ctx.restore();
+  ctx.save();ctx.strokeStyle=lc;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.setLineDash([]);ctx.beginPath();yRaw.forEach(function(yv,ii){var px=toX(xRaw[ii]),py=toY(yv);ii===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});ctx.stroke();ctx.restore();
   ctx.fillStyle=lbl;ctx.font='11px Inter,sans-serif';ctx.textAlign='right';
-  for(let i=0;i<=6;i++){const v=yMin+(yMax-yMin)*(1-i/6);ctx.fillText(v.toFixed(1),pad.left-6,pad.top+(i/6)*ch+4);}
-  ctx.textAlign='center';for(let i=0;i<=xT;i++){const xi=Math.round(i*(xRaw.length-1)/xT);ctx.fillText(xRaw[xi]+' yd',toX(xRaw[xi]),pad.top+ch+18);}
-  ctx.save();ctx.translate(14,pad.top+ch/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle=lbl;ctx.font='11px Inter,sans-serif';ctx.fillText(yAxisLabel,0,0);ctx.restore();
-  ctx.fillStyle=lbl;ctx.font='11px Inter,sans-serif';ctx.textAlign='center';ctx.fillText('Distance (yards)',pad.left+cw/2,H-4);
+  for(var k=0;k<=6;k++){var vv=yMin+(yMax-yMin)*(1-k/6);ctx.fillText(vv.toFixed(1),pad.left-6,pad.top+(k/6)*ch+4);}
+  ctx.textAlign='center';for(var l=0;l<=xT;l++){var xii=Math.round(l*(xRaw.length-1)/xT);ctx.fillText(xRaw[xii]+' yd',toX(xRaw[xii]),pad.top+ch+18);}
+  ctx.save();ctx.translate(14,pad.top+ch/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle=lbl;ctx.font='11px Inter,sans-serif';ctx.fillText(isE?'Energy (ft·lbs)':'Drop (inches)',0,0);ctx.restore();
+  ctx.fillStyle=lbl;ctx.textAlign='center';ctx.fillText('Distance (yards)',pad.left+cw/2,H-4);
   ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.setLineDash([]);ctx.strokeRect(pad.left,pad.top,cw,ch);
 }
-function bsTip(e){if(!BS_DATA.length)return;const canvas=document.getElementById('bs-canvas');if(!canvas)return;const rect=canvas.getBoundingClientRect(),mx=(e.clientX-rect.left)*(canvas.width/rect.width),cw=canvas.width-86,xMin=BS_DATA[0].d,xMax=BS_DATA[BS_DATA.length-1].d,xVal=xMin+((mx-58)/cw)*(xMax-xMin),pt=BS_DATA.reduce((a,b)=>Math.abs(b.d-xVal)<Math.abs(a.d-xVal)?b:a),tip=document.getElementById('bs-tip');if(tip){tip.textContent=pt.d+' yd | '+(pt.drop>0?'+':'')+pt.drop+'" | '+pt.fps+' fps | '+pt.energy+' ft·lb';tip.style.left=(e.offsetX+12)+'px';tip.style.top=(e.offsetY-12)+'px';tip.classList.remove('hidden');}}
-function updateTable(){const tbody=document.getElementById('bs-tbody');if(!tbody)return;tbody.innerHTML=BS_DATA.filter((_,i)=>i%2===0).map(d=>{const inZ=Math.abs(d.drop)<=BS.kz/2;return`<tr style="background:${inZ?'rgba(0,154,68,.16)':'transparent'}"><td style="padding:4px 9px">${d.d} yd</td><td style="padding:4px 9px;font-weight:600;color:${d.drop>0?'var(--g4)':d.drop<-3?'var(--err)':'var(--warn)'}">${d.drop>0?'+':''}${d.drop}"</td><td style="padding:4px 9px">${d.fps}</td><td style="padding:4px 9px">${d.energy}</td><td style="padding:4px 9px">${inZ?'✅ In zone':d.drop>0?'⬆️ High':'⬇️ Low'}</td></tr>`;}).join('');}
-function fpsPanelUpdate(){const el=document.getElementById('fps-str');if(el)FPS_STR=el.value;const vals=FPS_STR.split(',').map(s=>parseFloat(s.trim())).filter(n=>!isNaN(n)&&n>0);if(!vals.length)return;const avg=vals.reduce((a,b)=>a+b,0)/vals.length,es=Math.max(...vals)-Math.min(...vals),sd=Math.sqrt(vals.reduce((a,b)=>a+(b-avg)**2,0)/vals.length);const ss=document.getElementById('fps-stats');if(ss)ss.innerHTML=`<div class="grid3">${[['📊',avg.toFixed(1),'fps','Average'],['📏',es.toFixed(1),'fps','Ext. Spread'],['📉',sd.toFixed(2),'fps','Std Dev']].map(([i,v,u,l])=>`<div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center"><div>${i}</div><div style="font-size:18px;font-weight:800;color:var(--g4)">${v}</div><div style="font-size:10px;color:var(--sub)">${u}</div><div style="font-size:11px;color:var(--sub)">${l}</div></div>`).join('')}</div>`;const bars=document.getElementById('fps-bars');if(bars){const mn=Math.min(...vals),mx=Math.max(...vals),rng=mx-mn||1;bars.innerHTML=vals.map((v,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div class="sub" style="font-size:11px;width:26px">#${i+1}</div><div style="flex:1;background:var(--border);border-radius:4px;height:13px;overflow:hidden"><div style="width:${Math.max(((v-mn)/rng)*100,2)}%;background:${Math.abs(v-avg)<=sd?'var(--g4)':'var(--warn)'};height:100%"></div></div><div style="font-size:11px;color:${v===mx?'var(--g4)':'var(--sub)'};width:38px;text-align:right;font-weight:${v===mx?700:400}">${v}</div></div>`).join('');}}
-
-// ══════════════════════════════════════════════════════════════════════════
-// AIR EFFICIENCY & PRO SHOT ESTIMATOR
-// ══════════════════════════════════════════════════════════════════════════
-// Verified benchmarks:
-//   FX Impact M3 .30 cal — 480cc, 3625→2175 PSI, 72cc plenum, 600mm barrel, ~70 FPE → ~60–70 shots ✓
-//   FX Impact M4 Compact .30 cal — 300cc, 3625→2175 PSI, 75cc plenum, 500mm barrel, ~60 FPE → ~30 shots ✓
-//   FX Impact .22 cal — 480cc, 3625→2175 PSI, 72cc plenum, 600mm barrel, ~32 FPE → ~110 shots ✓
-//
-// Model: totalAir(SCC) = tankVol × (pressureDrop / 14.7)
-//        airPerShot = FPE × sccPerFpe
-//        sccPerFpe base = 13.0, adjusted by caliber/barrel/FPE/plenum
-function calcAirEff(cfg,fpe){
-  const{tankVol,startPSI,endPSI,regPSI,plenumCC,cal,barrelMM,regulated}=cfg;
-  const ATM=14.7;
-  if([fpe,tankVol,startPSI,endPSI,regPSI,plenumCC].some(v=>!v||v<=0))return null;
-  if(startPSI<=endPSI)return null;
-  let totalAir=tankVol*((startPSI-endPSI)/ATM);
-  if(!regulated)totalAir*=0.8;
-  let sccPerFpe=13.0;
-  if(cal>=0.30)sccPerFpe+=3.5;else if(cal>=0.25)sccPerFpe+=1.5;else if(cal<0.22)sccPerFpe-=1.5;
-  if(barrelMM>=600)sccPerFpe-=2.0;else if(barrelMM>0&&barrelMM<400)sccPerFpe+=3.0;
-  if(fpe>60)sccPerFpe-=3.0;else if(fpe>40)sccPerFpe-=1.5;else if(fpe<15)sccPerFpe+=2.0;
-  if(plenumCC>=75)sccPerFpe-=1.0;else if(plenumCC<40)sccPerFpe+=2.0;
-  sccPerFpe=Math.max(4.0,sccPerFpe);
-  const airPerShot=fpe*sccPerFpe;
-  const estimatedShots=Math.max(0,Math.floor(totalAir/airPerShot));
-  const conservativeShots=Math.max(0,Math.floor(totalAir/(fpe*(sccPerFpe*1.20))));
-  const optimizedShots=Math.max(0,Math.floor(totalAir/(fpe*(sccPerFpe*0.80))));
-  const efficiency=Math.min(2.5,Math.max(0.1,fpe/airPerShot));
-  let flowFactor=0.75;
-  if(barrelMM>=600)flowFactor+=0.10;if(barrelMM>0&&barrelMM<400)flowFactor-=0.10;if(cal>=0.30)flowFactor-=0.05;
-  flowFactor=Math.min(0.95,Math.max(0.60,flowFactor));
-  const requiredAir=fpe/1.5,matchRatio=airPerShot/requiredAir;
-  const plenumStatus=matchRatio<0.8?'Under-plenumed (velocity limited)':matchRatio<=1.2?'Balanced (optimal efficiency)':'Over-plenumed (wasting air)';
-  return{totalAir:Math.round(totalAir),airPerShot:Math.round(airPerShot),estimatedShots,conservativeShots,optimizedShots,efficiency:parseFloat(efficiency.toFixed(4)),flowFactor:parseFloat(flowFactor.toFixed(3)),matchRatio:parseFloat(matchRatio.toFixed(2)),plenumStatus,sccPerFpe:parseFloat(sccPerFpe.toFixed(1))};
+function bsTip(e){
+  if(!BS_DATA.length)return;
+  var canvas=document.getElementById('bs-canvas');if(!canvas)return;
+  var rect=canvas.getBoundingClientRect(),mx=(e.clientX-rect.left)*(canvas.width/rect.width);
+  var xMin=BS_DATA[0].d,xMax=BS_DATA[BS_DATA.length-1].d,xVal=xMin+((mx-58)/(canvas.width-86))*(xMax-xMin);
+  var pt=BS_DATA.reduce(function(a,b){return Math.abs(b.d-xVal)<Math.abs(a.d-xVal)?b:a;});
+  var tip=document.getElementById('bs-tip');
+  if(tip){tip.textContent=pt.d+' yd | '+(pt.drop>0?'+':'')+pt.drop+'" | '+pt.fps+' fps | '+pt.energy+' ft·lb';tip.style.left=(e.offsetX+12)+'px';tip.style.top=(e.offsetY-12)+'px';tip.classList.remove('hidden');}
 }
-function getTuneRecs(cfg,res){
-  if(!res)return[];
-  const{barrelMM,regulated}=cfg,{efficiency,flowFactor,matchRatio,airPerShot}=res,recs=[],w=(t,m)=>recs.push({type:t,msg:m});
-  if(efficiency<1.0){w('warn','Low efficiency — try increasing regulator setpoint pressure.');w('warn','Low efficiency — reduce hammer dwell to close valve sooner.');w('warn','Low efficiency — check for wasted air past the pellet or valve bounce.');}
-  if(efficiency>2.0)w('tip','High efficiency — power headroom available if desired.');
-  if(flowFactor<0.7)w('warn','Low flow factor — consider barrel length or bore fit to improve air utilization.');
-  if(barrelMM>0&&barrelMM<400)w('warn','Short barrel — significant air-to-velocity conversion loss expected.');
-  if(barrelMM>700)w('tip','Barrel over 700mm — diminishing velocity returns beyond this length.');
-  if(matchRatio<0.8)w('warn','Under-plenumed — increase plenum volume or raise regulator pressure.');
-  if(matchRatio>1.2)w('tip','Over-plenumed — reduce plenum size or lower dwell to reduce air waste.');
-  if(airPerShot>800)w('warn','High air per shot — valve timing or hammer spring adjustment recommended.');
-  if(!regulated)w('tip','Unregulated — adding a regulator can improve shot count and consistency by 20%+.');
-  if(!recs.length)w('ok','Setup looks well balanced — no major efficiency issues detected.');
-  return recs;
+function updateTable(){
+  var tbody=document.getElementById('bs-tbody');if(!tbody)return;
+  tbody.innerHTML=BS_DATA.filter(function(_,i){return i%2===0;}).map(function(d){var inZ=Math.abs(d.drop)<=BS.kz/2;return'<tr style="background:'+(inZ?'rgba(0,154,68,.16)':'transparent')+'"><td style="padding:4px 9px">'+d.d+' yd</td><td style="padding:4px 9px;font-weight:600;color:'+(d.drop>0?'var(--g4)':d.drop<-3?'var(--err)':'var(--warn)')+'">'+(d.drop>0?'+':'')+d.drop+'"</td><td style="padding:4px 9px">'+d.fps+'</td><td style="padding:4px 9px">'+d.energy+'</td><td style="padding:4px 9px">'+(inZ?'✅ In zone':d.drop>0?'⬆️ High':'⬇️ Low')+'</td></tr>';}).join('');
+}
+function fpsPanelUpdate(){
+  var vals=FPS_STR.split(',').map(function(s){return parseFloat(s.trim());}).filter(function(n){return!isNaN(n)&&n>0;});
+  if(!vals.length)return;
+  var avg=vals.reduce(function(a,b){return a+b;},0)/vals.length,es=Math.max.apply(null,vals)-Math.min.apply(null,vals),sd=Math.sqrt(vals.reduce(function(a,b){return a+(b-avg)*(b-avg);},0)/vals.length);
+  var ss=document.getElementById('fps-stats');
+  if(ss)ss.innerHTML='<div class="grid3">'+[['📊',avg.toFixed(1),'fps','Average'],['📏',es.toFixed(1),'fps','Ext. Spread'],['📉',sd.toFixed(2),'fps','Std Dev']].map(function(r){return'<div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center"><div>'+r[0]+'</div><div style="font-size:18px;font-weight:800;color:var(--g4)">'+r[1]+'</div><div style="font-size:10px;color:var(--sub)">'+r[2]+'</div><div style="font-size:11px;color:var(--sub)">'+r[3]+'</div></div>';}).join('')+'</div>';
+  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
+  var bars=document.getElementById('fps-bars');
+  if(bars)bars.innerHTML=vals.map(function(v,i){return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div class="sub" style="font-size:11px;width:26px">#'+(i+1)+'</div><div style="flex:1;background:var(--border);border-radius:4px;height:13px;overflow:hidden"><div style="width:'+Math.max(((v-mn)/rng)*100,2)+'%;background:'+(Math.abs(v-avg)<=sd?'var(--g4)':'var(--warn)')+';height:100%"></div></div><div style="font-size:11px;color:'+(v===mx?'var(--g4)':'var(--sub)')+';width:38px;text-align:right;font-weight:'+(v===mx?700:400)+'">'+v+'</div></div>';}).join('');
 }
 
+// ── AIR EFFICIENCY ─────────────────────────────────────────────────────────
+function calcAirEff(reg,tank,start,end,regP,plenum,cal,barrel,fpe){
+  var ATM=14.7,totalAir,scc;
+  if(reg){
+    totalAir=tank*((start-end)/ATM);scc=13.0;
+    if(cal>=0.30)scc+=3.5;else if(cal>=0.25)scc+=1.5;else if(cal<0.22)scc-=1.5;
+    if(barrel>=600)scc-=2.0;else if(barrel<400)scc+=3.0;
+    if(fpe>60)scc-=3.0;else if(fpe>40)scc-=1.5;else if(fpe<15)scc+=2.0;
+    var ppf=plenum/fpe;if(ppf>=1.0)scc-=1.0;else if(ppf<0.33)scc+=3.0;else if(ppf<0.5)scc+=1.5;
+  }else{
+    totalAir=tank*((start-end)/ATM)*0.80;scc=15.5;
+    if(cal>=0.30)scc+=4.0;else if(cal>=0.25)scc+=2.0;else if(cal<0.22)scc-=1.5;
+    if(barrel>=600)scc-=2.0;else if(barrel<400)scc+=3.5;
+    if(fpe>60)scc-=3.0;else if(fpe>40)scc-=1.5;else if(fpe<15)scc+=2.5;
+  }
+  scc=Math.max(4.0,scc);
+  var aps=fpe*scc,est=Math.max(0,Math.floor(totalAir/aps)),con=Math.max(0,Math.floor(totalAir/(aps*1.20))),opt=Math.max(0,Math.floor(totalAir/(aps*0.80)));
+  var eff=Math.min(2.5,Math.max(0.1,fpe/aps)),flow=reg?0.75:0.70;
+  if(barrel>=600)flow+=0.10;if(barrel<400)flow-=0.10;if(cal>=0.30)flow-=0.05;
+  flow=Math.min(0.95,Math.max(0.55,flow));
+  var matchRatio=1.0,plenumStatus='N/A — unregulated (no discrete plenum)';
+  if(reg){var ppf2=plenum/fpe;matchRatio=aps/(fpe/1.5);plenumStatus=ppf2<0.33?'Severely under-plenumed':ppf2<0.5?'Under-plenumed':ppf2<=1.0?'Balanced (~1 cc per FPE)':'Over-plenumed';}
+  return{totalAir:Math.round(totalAir),aps:Math.round(aps),est:est,con:con,opt:opt,eff:eff.toFixed(4),flow:flow.toFixed(3),matchRatio:matchRatio.toFixed(2),plenumStatus:plenumStatus};
+}
 function airEffHTML(){
-  const fpe=parseFloat(muzzleEnergy(BS.fps,BS.gr)).toFixed(2);
-  return `
-<div class="mb16">
-  <h2 class="accent" style="font-size:20px">💨 Air Efficiency &amp; Pro Shot Estimator</h2>
-  <p class="sub" style="font-size:12px;margin-top:3px">Professional PCP physics model · Verified against real guns · Valve flow analysis</p>
-</div>
-<div style="display:grid;grid-template-columns:275px 1fr;gap:14px" class="bl">
-  <div>
-    <div class="card">
-      <div class="fw7 accent mb12" style="font-size:13px">⚙️ Required Inputs</div>
-
-      <label class="lbl">Tank Volume (cc)</label>
-      <input type="number" min="1" max="5000" step="1" value="${AE.tankVol}" placeholder="e.g. 480" oninput="aeSet('tankVol',this.value)" class="mb8"/>
-
-      <label class="lbl">Start Pressure (PSI)</label>
-      <input type="number" min="1" max="6000" step="1" value="${AE.startPSI}" placeholder="e.g. 3625" oninput="aeSet('startPSI',this.value)" class="mb8"/>
-
-      <label class="lbl">End Pressure (PSI)</label>
-      <input type="number" min="1" max="6000" step="1" value="${AE.endPSI}" placeholder="e.g. 2175" oninput="aeSet('endPSI',this.value)" class="mb8"/>
-
-      <label class="lbl">Regulator Pressure (PSI)</label>
-      <input type="number" min="1" max="6000" step="1" value="${AE.regPSI}" placeholder="e.g. 2030" oninput="aeSet('regPSI',this.value)" class="mb8"/>
-
-      <label class="lbl">Plenum Volume (cc)</label>
-      <input type="number" min="0.1" max="300" step="0.5" value="${AE.plenumCC}" placeholder="e.g. 72" oninput="aeSet('plenumCC',this.value)" class="mb12"/>
-
-      <label class="lbl">Regulated</label>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button onclick="aeSet('regulated',true)"  style="flex:1" class="${AE.regulated ?'btn':'btn-ghost'} btn-sm">✓ Yes</button>
-        <button onclick="aeSet('regulated',false)" style="flex:1" class="${!AE.regulated?'btn':'btn-ghost'} btn-sm">✕ No</button>
-      </div>
-
-      <div style="background:var(--bg);border-radius:8px;padding:10px;font-size:13px;margin-bottom:12px">
-        <span class="sub">Live FPE: </span>
-        <span class="fw7 accent">${fpe} ft·lb</span>
-        <span class="sub" style="font-size:11px"> (from Ballistics)</span>
-      </div>
-
-      <button class="btn-ghost btn-sm" style="width:100%;margin-bottom:8px" onclick="aeToggleAdv()">
-        ${AE.showAdv?'▲ Hide':'▼ Show'} Advanced Settings
-      </button>
-      <div style="display:${AE.showAdv?'block':'none'}">
-        <label class="lbl">Caliber (inches)</label>
-        <input type="number" min="0.10" max="1.00" step="0.001" value="${AE.cal}" placeholder="e.g. 0.30" oninput="aeSet('cal',this.value)" class="mb8"/>
-        <label class="lbl">Barrel Length (mm)</label>
-        <input type="number" min="1" max="1000" step="1" value="${AE.barrelMM}" placeholder="e.g. 600" oninput="aeSet('barrelMM',this.value)" class="mb8"/>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <div class="grid3 mb12">
-      <div class="sc"><div style="font-size:20px">🎯</div><div class="sv" id="ae-est">—</div><div class="sl">Estimated Shots</div></div>
-      <div class="sc"><div style="font-size:20px">📉</div><div class="sv" id="ae-con">—</div><div class="sl">Conservative</div></div>
-      <div class="sc"><div style="font-size:20px">📈</div><div class="sv" id="ae-opt">—</div><div class="sl">Optimized</div></div>
-    </div>
-    <div class="card mb12">
-      <div class="fw7 accent mb10" style="font-size:13px">📊 Estimated Performance</div>
-      <div class="grid2" style="gap:10px">
-        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
-          <div class="sub" style="font-size:11px">Air Per Shot</div>
-          <div class="fw7 accent" style="font-size:20px" id="ae-aps">—</div>
-          <div class="sub" style="font-size:11px">SCC</div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
-          <div class="sub" style="font-size:11px">Total Available Air</div>
-          <div class="fw7 accent" style="font-size:18px" id="ae-tot">—</div>
-          <div class="sub" style="font-size:11px">SCC</div>
-        </div>
-      </div>
-    </div>
-    <div class="card mb12">
-      <div class="fw7 accent mb10" style="font-size:13px">⚡ Efficiency</div>
-      <div class="grid2" style="gap:10px">
-        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
-          <div class="sub" style="font-size:11px">Efficiency</div>
-          <div class="fw7 accent" style="font-size:20px" id="ae-eff">—</div>
-          <div class="sub" style="font-size:11px">FPE per cc</div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
-          <div class="sub" style="font-size:11px">Flow Factor</div>
-          <div class="fw7 accent" style="font-size:20px" id="ae-flow">—</div>
-          <div class="sub" style="font-size:11px">0.60 – 0.95</div>
-        </div>
-      </div>
-    </div>
-    <div class="card mb12">
-      <div class="fw7 accent mb10" style="font-size:13px">🔬 Plenum Analysis</div>
-      <div class="grid2" style="gap:10px">
-        <div style="background:var(--bg);border-radius:8px;padding:12px">
-          <div class="sub" style="font-size:11px;margin-bottom:4px">Plenum Status</div>
-          <div class="fw7" style="font-size:13px" id="ae-pstatus">—</div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center">
-          <div class="sub" style="font-size:11px;margin-bottom:4px">Match Ratio</div>
-          <div class="fw7 accent" style="font-size:20px" id="ae-ratio">—</div>
-          <div class="sub" style="font-size:11px">1.0 = optimal</div>
-        </div>
-      </div>
-    </div>
-    <div class="card mb12">
-      <div class="fw7 accent mb10" style="font-size:13px">🔧 Tune Recommendations</div>
-      <div id="ae-recs"><p class="sub" style="font-size:13px">Enter valid inputs to see recommendations.</p></div>
-    </div>
-    <div style="padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--sub);line-height:1.7">
-      ⚠️ <strong style="color:var(--text)">Disclaimer:</strong> Estimates based on user inputs and generalized airgun physics models. Actual performance varies depending on valve design, hammer spring settings, regulator behavior, and ammunition.
-    </div>
-  </div>
-</div>`;}
-
-function aeSet(k,v){AE[k]=typeof v==='boolean'?v:(isNaN(parseFloat(v))?AE[k]:parseFloat(v));aeUpdate();}
-function aeToggleAdv(){AE.showAdv=!AE.showAdv;if(PAGE==='aireff'){document.getElementById('main').innerHTML=airEffHTML();setTimeout(aeUpdate,30);}}
-function aeUpdate(){
-  if(PAGE!=='aireff')return;
-  const fpe=parseFloat(muzzleEnergy(BS.fps,BS.gr));
-  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-  const res=calcAirEff(AE,fpe);
-  if(!res){['ae-est','ae-con','ae-opt','ae-aps','ae-tot','ae-eff','ae-flow','ae-ratio'].forEach(id=>set(id,'—'));set('ae-pstatus','—');const r=document.getElementById('ae-recs');if(r)r.innerHTML='<p class="sub" style="font-size:13px">⚠️ Check inputs — start pressure must exceed end pressure.</p>';return;}
-  set('ae-est',res.estimatedShots);set('ae-con',res.conservativeShots);set('ae-opt',res.optimizedShots);
-  set('ae-aps',res.airPerShot.toLocaleString());set('ae-tot',res.totalAir.toLocaleString());
-  set('ae-eff',res.efficiency.toFixed(4));set('ae-flow',res.flowFactor.toFixed(3));set('ae-ratio',res.matchRatio.toFixed(2));
-  set('ae-pstatus',res.plenumStatus);
-  const ps=document.getElementById('ae-pstatus');if(ps)ps.style.color=res.matchRatio<0.8?'var(--err)':res.matchRatio<=1.2?'var(--g4)':'var(--warn)';
-  const recs=getTuneRecs(AE,res),recEl=document.getElementById('ae-recs');
-  if(recEl)recEl.innerHTML=recs.map(r=>{const icon=r.type==='ok'?'✅':r.type==='tip'?'💡':'⚠️',color=r.type==='ok'?'var(--g4)':r.type==='tip'?'var(--warn)':'var(--err)';return`<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="flex-shrink:0">${icon}</span><span style="color:${color}">${r.msg}</span></div>`;}).join('');
+  var reg=AE.regulated,fpe=muzzleEnergy(BS.fps,BS.gr).toFixed(2);
+  var h='<div class="mb16"><h2 class="accent" style="font-size:20px">💨 Air Efficiency &amp; Pro Shot Estimator</h2><p class="sub" style="font-size:12px;margin-top:3px">Professional PCP physics model · Verified against real guns</p></div>';
+  h+='<div style="display:grid;grid-template-columns:275px 1fr;gap:14px" class="bl"><div><div class="card">';
+  h+='<div class="fw7 accent mb12" style="font-size:13px">⚙️ Gun Setup</div>';
+  h+='<label class="lbl" style="margin-bottom:8px">Step 1 — Select system type</label>';
+  h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
+  h+='<div id="ae-reg-yes" class="reg-card'+(reg===true?' sel-yes':'')+'">';
+  h+='<div style="font-size:24px;margin-bottom:4px">🎛️</div><div class="fw7" style="font-size:13px">Regulated</div>';
+  h+='<div class="sub" style="font-size:11px;margin-top:3px">Consistent pressure</div>';
+  if(reg===true)h+='<div style="margin-top:6px;color:var(--g4);font-size:18px">✓</div>';
+  h+='</div>';
+  h+='<div id="ae-reg-no" class="reg-card'+(reg===false?' sel-no':'')+'">';
+  h+='<div style="font-size:24px;margin-bottom:4px">💨</div><div class="fw7" style="font-size:13px">Unregulated</div>';
+  h+='<div class="sub" style="font-size:11px;margin-top:3px">Direct tank pressure</div>';
+  if(reg===false)h+='<div style="margin-top:6px;color:var(--warn);font-size:18px">✓</div>';
+  h+='</div></div>';
+  if(reg===null)h+='<div style="padding:10px 12px;background:rgba(245,158,11,.1);border:1px solid var(--warn);border-radius:8px;font-size:12px;color:var(--warn);margin-bottom:12px">⚠️ Select Regulated or Unregulated above first.</div>';
+  h+='<label class="lbl">Tank Volume (cc)</label><input type="number" min="1" max="5000" step="1" value="'+(AE.tankVol||'')+'" placeholder="e.g. 480" data-ae="tankVol" class="mb8"/>';
+  h+='<label class="lbl">Start Pressure (PSI)</label><input type="number" min="1" max="6000" step="1" value="'+(AE.startPSI||'')+'" placeholder="e.g. 3625" data-ae="startPSI" class="mb8"/>';
+  h+='<label class="lbl">End Pressure (PSI)</label><input type="number" min="1" max="6000" step="1" value="'+(AE.endPSI||'')+'" placeholder="e.g. 2175" data-ae="endPSI" class="mb8"/>';
+  if(reg===true){
+    h+='<label class="lbl">Regulator Pressure (PSI)</label><input type="number" min="1" max="6000" step="1" value="'+(AE.regPSI||'')+'" placeholder="e.g. 2030" data-ae="regPSI" class="mb8"/>';
+    h+='<label class="lbl">Plenum Volume (cc) <span style="color:var(--sub);font-size:11px">— chamber between reg &amp; valve, NOT the tank</span></label>';
+    h+='<input type="number" min="0.1" max="300" step="0.5" value="'+(AE.plenumCC||'')+'" placeholder="e.g. 40–80cc (~1cc per FPE)" data-ae="plenumCC" class="mb8"/>';
+  }else if(reg===false){
+    h+='<div style="padding:9px 12px;background:rgba(0,154,68,.07);border:1px solid rgba(0,154,68,.25);border-radius:8px;font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.7"><strong style="color:var(--g4)">No plenum needed.</strong> Valve draws directly from tank. 2cc transfer port applied internally.</div>';
+  }
+  h+='<div style="background:var(--bg);border-radius:8px;padding:10px;font-size:13px;margin-bottom:12px"><span class="sub">Live FPE: </span><span class="fw7 accent">'+fpe+' ft·lb</span><span class="sub" style="font-size:11px"> (from Ballistics)</span></div>';
+  h+='<button id="ae-adv-btn" class="btn-ghost btn-sm" style="width:100%;margin-bottom:8px">'+(AE.showAdv?'▲ Hide':'▼ Show')+' Advanced Settings</button>';
+  h+='<div id="ae-adv" style="display:'+(AE.showAdv?'block':'none')+'">';
+  h+='<label class="lbl">Caliber (inches)</label><input type="number" min="0.10" max="1.00" step="0.001" value="'+(AE.cal||'')+'" placeholder="e.g. 0.22" data-ae="cal" class="mb8"/>';
+  h+='<label class="lbl">Barrel Length (mm)</label><input type="number" min="1" max="1000" step="1" value="'+(AE.barrelMM||'')+'" placeholder="e.g. 600" data-ae="barrelMM" class="mb8"/>';
+  h+='</div></div></div>';
+  h+='<div><div class="grid3 mb12"><div class="sc"><div style="font-size:20px">🎯</div><div class="sv" id="ae-est">—</div><div class="sl">Estimated Shots</div></div><div class="sc"><div style="font-size:20px">📉</div><div class="sv" id="ae-con">—</div><div class="sl">Conservative</div></div><div class="sc"><div style="font-size:20px">📈</div><div class="sv" id="ae-opt">—</div><div class="sl">Optimized</div></div></div>';
+  h+='<div class="card mb12"><div class="fw7 accent mb10" style="font-size:13px">📊 Estimated Performance</div><div class="grid2" style="gap:10px"><div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center"><div class="sub" style="font-size:11px">Air Per Shot</div><div class="fw7 accent" style="font-size:20px" id="ae-aps">—</div><div class="sub" style="font-size:11px">SCC</div></div><div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center"><div class="sub" style="font-size:11px">Total Available Air</div><div class="fw7 accent" style="font-size:18px" id="ae-tot">—</div><div class="sub" style="font-size:11px">SCC</div></div></div></div>';
+  h+='<div class="card mb12"><div class="fw7 accent mb10" style="font-size:13px">⚡ Efficiency</div><div class="grid2" style="gap:10px"><div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center"><div class="sub" style="font-size:11px">Efficiency</div><div class="fw7 accent" style="font-size:20px" id="ae-eff">—</div><div class="sub" style="font-size:11px">FPE per cc</div></div><div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center"><div class="sub" style="font-size:11px">Flow Factor</div><div class="fw7 accent" style="font-size:20px" id="ae-flow">—</div><div class="sub" style="font-size:11px">0.55–0.95</div></div></div></div>';
+  h+='<div class="card mb12"><div class="fw7 accent mb10" style="font-size:13px">🔬 Plenum Analysis</div><div class="grid2" style="gap:10px"><div style="background:var(--bg);border-radius:8px;padding:12px"><div class="sub" style="font-size:11px;margin-bottom:4px">Plenum Status</div><div class="fw7" style="font-size:13px" id="ae-pstatus">—</div></div><div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div class="sub" style="font-size:11px;margin-bottom:4px">Match Ratio</div><div class="fw7 accent" style="font-size:20px" id="ae-ratio">—</div><div class="sub" style="font-size:11px">1.0 = optimal</div></div></div></div>';
+  h+='<div style="padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--sub);line-height:1.7">⚠️ <strong style="color:var(--text)">Disclaimer:</strong> Estimates based on generalized airgun physics models. Actual performance varies by valve design, hammer spring, regulator behavior, and ammunition.</div>';
+  h+='</div></div>';
+  return h;
+}
+function bindAirEff(){
+  var yes=document.getElementById('ae-reg-yes');
+  var no=document.getElementById('ae-reg-no');
+  if(yes)yes.addEventListener('click',function(){AE.regulated=true;document.getElementById('main').innerHTML=airEffHTML();bindAirEff();aeCalc();});
+  if(no)no.addEventListener('click',function(){AE.regulated=false;AE.regPSI=null;AE.plenumCC=null;document.getElementById('main').innerHTML=airEffHTML();bindAirEff();aeCalc();});
+  document.querySelectorAll('[data-ae]').forEach(function(el){el.addEventListener('input',function(){var v=parseFloat(this.value);AE[this.dataset.ae]=isNaN(v)?null:v;aeCalc();});});
+  var adv=document.getElementById('ae-adv-btn');
+  if(adv)adv.addEventListener('click',function(){AE.showAdv=!AE.showAdv;var d=document.getElementById('ae-adv');if(d)d.style.display=AE.showAdv?'block':'none';this.textContent=(AE.showAdv?'▲ Hide':'▼ Show')+' Advanced Settings';});
+  aeCalc();
+}
+function aeCalc(){
+  function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  function clear(){['ae-est','ae-con','ae-opt','ae-aps','ae-tot','ae-eff','ae-flow','ae-ratio','ae-pstatus'].forEach(function(id){set(id,'—');});}
+  var reg=AE.regulated;if(reg===null){clear();return;}
+  var tank=parseFloat(AE.tankVol)||0,start=parseFloat(AE.startPSI)||0,end=parseFloat(AE.endPSI)||0;
+  var regP=parseFloat(AE.regPSI)||0,pl=reg===false?2:(parseFloat(AE.plenumCC)||0);
+  var cal=parseFloat(AE.cal)||0.22,barrel=parseFloat(AE.barrelMM)||500;
+  var fpe=muzzleEnergy(BS.fps,BS.gr);if(fpe<=0)fpe=20;
+  if(tank<=0||start<=0||end<=0||start<=end){clear();return;}
+  if(reg===true&&(regP<=0||pl<=0)){clear();return;}
+  var r=calcAirEff(reg,tank,start,end,regP,pl,cal,barrel,fpe);
+  set('ae-est',r.est);set('ae-con',r.con);set('ae-opt',r.opt);
+  set('ae-aps',r.aps.toLocaleString());set('ae-tot',r.totalAir.toLocaleString());
+  set('ae-eff',r.eff);set('ae-flow',r.flow);set('ae-ratio',r.matchRatio);set('ae-pstatus',r.plenumStatus);
+  var ps=document.getElementById('ae-pstatus');
+  if(ps){var mr=parseFloat(r.matchRatio);ps.style.color=mr<0.8?'var(--err)':mr<=1.2?'var(--g4)':'var(--warn)';}
 }
 
-// ══════════════════════════════════════════════════════════════════════════
-// FORUM
-// ══════════════════════════════════════════════════════════════════════════
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// ── FORUM ──────────────────────────────────────────────────────────────────
 function forumHTML(){if(FTH)return threadViewHTML();if(FV==='threads')return threadListHTML();return catListHTML();}
-function catListHTML(){return`
-<div class="between mb16" style="flex-wrap:wrap;gap:8px">
-  <div><h2 class="accent" style="font-size:20px">💬 Community Forum</h2><p class="sub" style="font-size:12px;margin-top:2px">${Object.keys(USERS).length} members · ${THREADS.length} threads</p></div>
-  <button class="btn btn-sm" onclick="showNTForm()">+ New Thread</button>
-</div>
-<div id="nt-form" class="card hidden mb16">
-  <div class="fw7 accent mb10">Create New Thread</div>
-  <select id="nt-cat" class="mb8"><option value="">Select category...</option>${CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select>
-  <input id="nt-title" placeholder="Thread title..." class="mb8"/>
-  <textarea id="nt-body" rows="3" placeholder="Opening post..."></textarea>
-  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn-ghost btn-sm" onclick="hideNTForm()">Cancel</button><button class="btn btn-sm" onclick="submitThread()">Post</button></div>
-</div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:20px">
-  ${CATS.map(c=>`<div class="card" onclick="openCat(${c.id})" style="cursor:pointer;transition:border .2s" onmouseover="this.style.borderColor='var(--g)'" onmouseout="this.style.borderColor='var(--border)'"><div class="row"><div style="font-size:28px">${c.icon}</div><div><div class="fw7 accent">${c.name}</div><div class="sub" style="font-size:12px;margin-top:2px">${c.desc}</div><div class="sub" style="font-size:11px;margin-top:3px">${c.threads} threads · ${c.posts} posts</div></div></div></div>`).join('')}
-</div>
-<div class="card"><div class="fw7 accent mb12">🔥 Recent Activity</div>
-  ${[...THREADS].reverse().slice(0,6).map(t=>`<div class="trow" onclick="openThread(${t.id})"><div style="flex:1"><div class="ttitle">${esc(t.title)}</div><div class="sub" style="font-size:12px;margin-top:2px">${CATS.find(c=>c.id===t.cat)?.name} · ${t.author} · ${t.time}</div></div><div class="sub" style="font-size:12px;flex-shrink:0">💬 ${t.replies}</div></div>`).join('')}
-</div>`;}
-function threadListHTML(){const threads=THREADS.filter(t=>t.cat===FCAT.id);return`
-<div class="between mb16" style="flex-wrap:wrap;gap:8px">
-  <div class="row"><button class="btn-ghost btn-sm" onclick="backToCats()">← Categories</button><span class="fw7 accent">${FCAT.icon} ${FCAT.name}</span></div>
-  <button class="btn btn-sm" onclick="showNTForm()">+ New Thread</button>
-</div>
-<div id="nt-form" class="card hidden mb12">
-  <div class="fw7 accent mb10">New Thread in ${esc(FCAT.name)}</div>
-  <input id="nt-title" placeholder="Title..." class="mb8"/>
-  <textarea id="nt-body" rows="3" placeholder="Opening post..."></textarea>
-  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn-ghost btn-sm" onclick="hideNTForm()">Cancel</button><button class="btn btn-sm" onclick="submitThread()">Post</button></div>
-</div>
-${threads.length?threads.map(t=>`<div class="card mb8" onclick="openThread(${t.id})" style="cursor:pointer;transition:border .2s" onmouseover="this.style.borderColor='var(--g)'" onmouseout="this.style.borderColor='var(--border)'"><div class="between"><div style="flex:1"><div class="row" style="flex-wrap:wrap;gap:5px">${t.pinned?'<span class="badge badge-g">📌</span>':''}<span class="fw7">${esc(t.title)}</span></div><div class="sub" style="font-size:12px;margin-top:3px">by ${t.author} · ${t.time}</div></div><div style="text-align:right;font-size:12px;color:var(--sub);flex-shrink:0"><div>💬 ${t.replies}</div><div>👁 ${t.views}</div></div></div></div>`).join(''):'<div class="card" style="text-align:center;padding:28px;color:var(--sub)">No threads yet!</div>'}`;}
-function threadViewHTML(){const t=FTH,mod=CU&&['admin','mod'].includes(CU.role);return`
-<div class="row mb16"><button class="btn-ghost btn-sm" onclick="backToThreads()">← Threads</button><span class="sub" style="font-size:12px">${FCAT?.name||''}</span></div>
-<div class="card">
-  <div class="row mb8" style="flex-wrap:wrap;gap:6px">${t.pinned?'<span class="badge badge-g">📌 Pinned</span>':''}<h2 style="font-size:17px;color:var(--g4)">${esc(t.title)}</h2>${mod?`<button class="btn-warn btn-sm" onclick="pinThread(${t.id})">${t.pinned?'Unpin':'Pin'}</button><button class="btn-danger btn-sm" onclick="delThread(${t.id})">Delete</button>`:''}</div>
-  <div class="sub mb16" style="font-size:12px">by ${t.author} · ${t.time} · 👁 ${t.views}</div>
-  ${t.posts.filter(p=>!p.deleted).map((p,i)=>`<div style="${i>0?'border-top:1px solid var(--border);padding-top:14px;margin-top:14px':''}"><div class="row" style="align-items:flex-start;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:var(--g3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">${USERS[p.author]?.role==='admin'?'👑':USERS[p.author]?.role==='mod'?'🛡️':'👤'}</div><div style="flex:1"><div class="fw7 accent" style="font-size:13px">${p.author} ${USERS[p.author]?.role==='admin'?'<span class="badge badge-g" style="font-size:10px">Admin</span>':USERS[p.author]?.role==='mod'?'<span class="badge badge-w" style="font-size:10px">Mod</span>':''}<span class="sub" style="font-weight:400;font-size:12px">· ${p.time}</span></div><div style="margin-top:6px;line-height:1.75;font-size:14px">${esc(p.body)}</div><div class="row" style="margin-top:8px;gap:14px"><span class="sub" style="font-size:12px;cursor:pointer" onclick="vote(${t.id},${p.id},1)">👍 ${p.votes}</span><span class="sub" style="font-size:12px;cursor:pointer" onclick="vote(${t.id},${p.id},-1)">👎</span><span class="sub" style="font-size:12px;cursor:pointer" onclick="report(${t.id},${p.id})">🚩 Report${p.reports.length?' ('+p.reports.length+')':''}</span>${mod?`<span style="font-size:12px;cursor:pointer;color:var(--err)" onclick="modDel(${t.id},${p.id})">🗑️ Remove</span>`:''}</div></div></div></div>`).join('')}
-  ${CU?`<hr class="sep" style="margin-top:18px"><div class="fw7 accent mb8">Post a Reply</div><textarea id="reply-box" rows="4" placeholder="Share data, experience, or setup..."></textarea><div style="text-align:right;margin-top:8px"><button class="btn btn-sm" onclick="submitReply(${t.id})">Submit Reply</button></div>`:`<div style="text-align:center;padding:14px;color:var(--sub);font-size:13px"><a href="#" onclick="openModal('login-modal')">Login</a> or <a href="#" onclick="openModal('reg-modal')">Register</a> to reply.</div>`}
-</div>`;}
-function openCat(id){FCAT=CATS.find(c=>c.id===id);FV='threads';FTH=null;renderAll();}
-function backToCats(){FV='cats';FCAT=null;FTH=null;renderAll();}
-function openThread(id){FTH=THREADS.find(t=>t.id===id);if(FTH){FTH.views++;if(!FCAT)FCAT=CATS.find(c=>c.id===FTH.cat);}renderAll();}
-function backToThreads(){FTH=null;renderAll();}
-function showNTForm(){document.getElementById('nt-form')?.classList.remove('hidden');}
-function hideNTForm(){document.getElementById('nt-form')?.classList.add('hidden');}
-function submitThread(){if(!CU){toast('Login to post','warn');return;}const title=document.getElementById('nt-title')?.value.trim(),body=document.getElementById('nt-body')?.value.trim();if(!title||!body){toast('Title and body required','warn');return;}const catId=FCAT?FCAT.id:parseInt(document.getElementById('nt-cat')?.value||'1');THREADS.unshift({id:Date.now(),cat:catId,title,author:CU.name,replies:0,views:0,pinned:false,time:'just now',posts:[{id:1,author:CU.name,body,time:'just now',votes:0,reports:[],deleted:false}]});hideNTForm();toast('Thread posted!');renderAll();}
-function submitReply(tid){if(!CU){toast('Login required','warn');return;}const body=document.getElementById('reply-box')?.value.trim();if(!body){toast('Reply cannot be empty','warn');return;}const t=THREADS.find(t=>t.id===tid);if(!t)return;t.posts.push({id:Date.now(),author:CU.name,body,time:'just now',votes:0,reports:[],deleted:false});t.replies++;FTH=t;renderAll();toast('Reply posted!');}
-function vote(tid,pid,val){if(!CU){toast('Login to vote','warn');return;}const p=THREADS.find(t=>t.id===tid)?.posts.find(p=>p.id===pid);if(p){p.votes+=val;renderAll();}}
-function report(tid,pid){if(!CU){toast('Login to report','warn');return;}const p=THREADS.find(t=>t.id===tid)?.posts.find(p=>p.id===pid);if(p&&!p.reports.includes(CU.name)){p.reports.push(CU.name);toast('Post reported');renderAll();}}
-function modDel(tid,pid){const p=THREADS.find(t=>t.id===tid)?.posts.find(p=>p.id===pid);if(p){p.deleted=true;p.body='[Removed by moderator]';renderAll();toast('Post removed');}}
-function pinThread(tid){const t=THREADS.find(t=>t.id===tid);if(t){t.pinned=!t.pinned;renderAll();toast(t.pinned?'Pinned':'Unpinned');}}
-function delThread(tid){if(!confirm('Delete thread permanently?'))return;const i=THREADS.findIndex(t=>t.id===tid);if(i>-1){THREADS.splice(i,1);FTH=null;renderAll();toast('Thread deleted');}}
+function catListHTML(){
+  return'<div class="between mb16" style="flex-wrap:wrap;gap:8px"><div><h2 class="accent" style="font-size:20px">💬 Community Forum</h2><p class="sub" style="font-size:12px;margin-top:2px">'+Object.keys(USERS).length+' members · '+THREADS.length+' threads</p></div><button class="btn btn-sm" id="new-thread-btn">+ New Thread</button></div>'+
+  '<div id="nt-form" class="card hidden mb16"><div class="fw7 accent mb10">Create New Thread</div><select id="nt-cat" class="mb8"><option value="">Select category...</option>'+CATS.map(function(c){return'<option value="'+c.id+'">'+c.name+'</option>';}).join('')+'</select><input id="nt-title" placeholder="Thread title..." class="mb8"/><textarea id="nt-body" rows="3" placeholder="Opening post..."></textarea><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn-ghost btn-sm" id="nt-cancel">Cancel</button><button class="btn btn-sm" id="nt-submit">Post</button></div></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:20px">'+CATS.map(function(c){return'<div class="card" data-cat="'+c.id+'" style="cursor:pointer;transition:border .2s" onmouseover="this.style.borderColor=\'var(--g)\'" onmouseout="this.style.borderColor=\'var(--border)\'"><div class="row"><div style="font-size:28px">'+c.icon+'</div><div><div class="fw7 accent">'+c.name+'</div><div class="sub" style="font-size:12px;margin-top:2px">'+c.desc+'</div><div class="sub" style="font-size:11px;margin-top:3px">'+c.threads+' threads · '+c.posts+' posts</div></div></div></div>';}).join('')+'</div>'+
+  '<div class="card"><div class="fw7 accent mb12">🔥 Recent Activity</div>'+[...THREADS].reverse().slice(0,6).map(function(t){return'<div class="trow" data-tid="'+t.id+'"><div style="flex:1"><div class="ttitle">'+esc(t.title)+'</div><div class="sub" style="font-size:12px;margin-top:2px">'+(CATS.find(function(c){return c.id===t.cat;})||{name:''}).name+' · '+t.author+' · '+t.time+'</div></div><div class="sub" style="font-size:12px;flex-shrink:0">💬 '+t.replies+'</div></div>';}).join('')+'</div>';
+}
+function threadListHTML(){
+  var threads=THREADS.filter(function(t){return t.cat===FCAT.id;});
+  return'<div class="between mb16" style="flex-wrap:wrap;gap:8px"><div class="row"><button class="btn-ghost btn-sm" id="back-cats">← Categories</button><span class="fw7 accent">'+FCAT.icon+' '+FCAT.name+'</span></div><button class="btn btn-sm" id="new-thread-btn">+ New Thread</button></div>'+
+  '<div id="nt-form" class="card hidden mb12"><div class="fw7 accent mb10">New Thread in '+esc(FCAT.name)+'</div><input id="nt-title" placeholder="Title..." class="mb8"/><textarea id="nt-body" rows="3" placeholder="Opening post..."></textarea><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn-ghost btn-sm" id="nt-cancel">Cancel</button><button class="btn btn-sm" id="nt-submit">Post</button></div></div>'+
+  (threads.length?threads.map(function(t){return'<div class="card mb8" data-tid="'+t.id+'" style="cursor:pointer;transition:border .2s" onmouseover="this.style.borderColor=\'var(--g)\'" onmouseout="this.style.borderColor=\'var(--border)\'"><div class="between"><div style="flex:1"><div class="row" style="flex-wrap:wrap;gap:5px">'+(t.pinned?'<span class="badge badge-g">📌</span>':'')+'<span class="fw7">'+esc(t.title)+'</span></div><div class="sub" style="font-size:12px;margin-top:3px">by '+t.author+' · '+t.time+'</div></div><div style="text-align:right;font-size:12px;color:var(--sub);flex-shrink:0"><div>💬 '+t.replies+'</div><div>👁 '+t.views+'</div></div></div></div>';}).join(''):'<div class="card" style="text-align:center;padding:28px;color:var(--sub)">No threads yet!</div>');
+}
+function threadViewHTML(){
+  var t=FTH,mod=CU&&(CU.role==='admin'||CU.role==='mod');
+  return'<div class="row mb16"><button class="btn-ghost btn-sm" id="back-threads">← Threads</button><span class="sub" style="font-size:12px">'+(FCAT?FCAT.name:'')+'</span></div>'+
+  '<div class="card"><div class="row mb8" style="flex-wrap:wrap;gap:6px">'+(t.pinned?'<span class="badge badge-g">📌 Pinned</span>':'')+'<h2 style="font-size:17px;color:var(--g4)">'+esc(t.title)+'</h2>'+(mod?'<button class="btn-warn btn-sm" data-pin="'+t.id+'">'+(t.pinned?'Unpin':'Pin')+'</button><button class="btn-danger btn-sm" data-del="'+t.id+'">Delete</button>':'')+'</div>'+
+  '<div class="sub mb16" style="font-size:12px">by '+t.author+' · '+t.time+' · 👁 '+t.views+'</div>'+
+  t.posts.filter(function(p){return!p.deleted;}).map(function(p,i){
+    var u=USERS[p.author]||{role:'user'};
+    return'<div style="'+(i>0?'border-top:1px solid var(--border);padding-top:14px;margin-top:14px':'')+'"><div class="row" style="align-items:flex-start;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:var(--g3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">'+(u.role==='admin'?'👑':u.role==='mod'?'🛡️':'👤')+'</div><div style="flex:1"><div class="fw7 accent" style="font-size:13px">'+p.author+(u.role==='admin'?' <span class="badge badge-g" style="font-size:10px">Admin</span>':u.role==='mod'?' <span class="badge badge-w" style="font-size:10px">Mod</span>':'')+' <span class="sub" style="font-weight:400;font-size:12px">· '+p.time+'</span></div><div style="margin-top:6px;line-height:1.75;font-size:14px">'+esc(p.body)+'</div><div class="row" style="margin-top:8px;gap:14px"><span class="sub" style="font-size:12px;cursor:pointer" data-vote="'+t.id+','+p.id+',1">👍 '+p.votes+'</span><span class="sub" style="font-size:12px;cursor:pointer" data-vote="'+t.id+','+p.id+',-1">👎</span><span class="sub" style="font-size:12px;cursor:pointer" data-report="'+t.id+','+p.id+'">🚩 Report'+(p.reports.length?' ('+p.reports.length+')':'')+'</span>'+(mod?'<span style="font-size:12px;cursor:pointer;color:var(--err)" data-moddel="'+t.id+','+p.id+'">🗑️ Remove</span>':'')+'</div></div></div></div>';
+  }).join('')+
+  (CU?'<hr class="sep" style="margin-top:18px"><div class="fw7 accent mb8">Post a Reply</div><textarea id="reply-box" rows="4" placeholder="Share data, experience, or setup..."></textarea><div style="text-align:right;margin-top:8px"><button class="btn btn-sm" id="reply-btn">Submit Reply</button></div>':'<div style="text-align:center;padding:14px;color:var(--sub);font-size:13px">Login or Register to reply.</div>')+
+  '</div>';
+}
+function bindForum(){
+  var ntb=document.getElementById('new-thread-btn');if(ntb)ntb.addEventListener('click',function(){document.getElementById('nt-form').classList.remove('hidden');});
+  var ntc=document.getElementById('nt-cancel');if(ntc)ntc.addEventListener('click',function(){document.getElementById('nt-form').classList.add('hidden');});
+  var nts=document.getElementById('nt-submit');
+  if(nts)nts.addEventListener('click',function(){
+    if(!CU){toast('Login to post','warn');return;}
+    var title=(document.getElementById('nt-title')||{value:''}).value.trim(),body=(document.getElementById('nt-body')||{value:''}).value.trim();
+    if(!title||!body){toast('Title and body required','warn');return;}
+    var catId=FCAT?FCAT.id:parseInt((document.getElementById('nt-cat')||{value:'1'}).value||'1');
+    THREADS.unshift({id:Date.now(),cat:catId,title:title,author:CU.name,replies:0,views:0,pinned:false,time:'just now',posts:[{id:1,author:CU.name,body:body,time:'just now',votes:0,reports:[],deleted:false}]});
+    toast('Thread posted!');renderAll();
+  });
+  var bc=document.getElementById('back-cats');if(bc)bc.addEventListener('click',function(){FV='cats';FCAT=null;FTH=null;renderAll();});
+  var bt=document.getElementById('back-threads');if(bt)bt.addEventListener('click',function(){FTH=null;renderAll();});
+  var rb=document.getElementById('reply-btn');
+  if(rb)rb.addEventListener('click',function(){
+    if(!CU){toast('Login required','warn');return;}
+    var body=document.getElementById('reply-box').value.trim();if(!body){toast('Reply cannot be empty','warn');return;}
+    FTH.posts.push({id:Date.now(),author:CU.name,body:body,time:'just now',votes:0,reports:[],deleted:false});FTH.replies++;renderAll();toast('Reply posted!');
+  });
+  document.querySelectorAll('[data-cat]').forEach(function(el){el.addEventListener('click',function(){FCAT=CATS.find(function(c){return c.id===parseInt(el.dataset.cat);});FV='threads';FTH=null;renderAll();});});
+  document.querySelectorAll('[data-tid]').forEach(function(el){el.addEventListener('click',function(){FTH=THREADS.find(function(t){return t.id===parseInt(el.dataset.tid);});if(FTH){FTH.views++;if(!FCAT)FCAT=CATS.find(function(c){return c.id===FTH.cat;});}renderAll();});});
+  document.querySelectorAll('[data-vote]').forEach(function(el){el.addEventListener('click',function(){if(!CU){toast('Login to vote','warn');return;}var pts=this.dataset.vote.split(',');var t=THREADS.find(function(t){return t.id===parseInt(pts[0]);});if(t){var pp=t.posts.find(function(x){return x.id===parseInt(pts[1]);});if(pp){pp.votes+=parseInt(pts[2]);renderAll();}}});});
+  document.querySelectorAll('[data-report]').forEach(function(el){el.addEventListener('click',function(){if(!CU){toast('Login to report','warn');return;}var pts=this.dataset.report.split(',');var t=THREADS.find(function(t){return t.id===parseInt(pts[0]);});if(t){var p=t.posts.find(function(x){return x.id===parseInt(pts[1]);});if(p&&!p.reports.includes(CU.name)){p.reports.push(CU.name);toast('Post reported');renderAll();}}});});
+  document.querySelectorAll('[data-moddel]').forEach(function(el){el.addEventListener('click',function(){var pts=this.dataset.moddel.split(',');var t=THREADS.find(function(t){return t.id===parseInt(pts[0]);});if(t){var p=t.posts.find(function(x){return x.id===parseInt(pts[1]);});if(p){p.deleted=true;p.body='[Removed by moderator]';renderAll();toast('Post removed');}}});});
+  document.querySelectorAll('[data-pin]').forEach(function(el){el.addEventListener('click',function(){var t=THREADS.find(function(t){return t.id===parseInt(el.dataset.pin);});if(t){t.pinned=!t.pinned;renderAll();toast(t.pinned?'Pinned':'Unpinned');}});});
+  document.querySelectorAll('[data-del]').forEach(function(el){el.addEventListener('click',function(){if(!confirm('Delete thread permanently?'))return;var i=THREADS.findIndex(function(t){return t.id===parseInt(el.dataset.del);});if(i>-1){THREADS.splice(i,1);FTH=null;renderAll();toast('Thread deleted');}});});
+}
 
-// ══════════════════════════════════════════════════════════════════════════
-// TRAINING TRACKER
-// ══════════════════════════════════════════════════════════════════════════
-function trainingHTML(){const avg=SESSIONS.length?(SESSIONS.reduce((a,s)=>a+s.score,0)/SESSIONS.length).toFixed(1):0,best=SESSIONS.length?Math.max(...SESSIONS.map(s=>s.score)):0,trend=SESSIONS.length>1?(SESSIONS[SESSIONS.length-1].score-SESSIONS[0].score).toFixed(0):0;return`
-<h2 class="accent mb16" style="font-size:20px">🎯 Training Session Tracker</h2>
-<div class="grid3 mb12"><div class="sc"><div style="font-size:24px">📋</div><div class="sv">${SESSIONS.length}</div><div class="sl">Sessions</div></div><div class="sc"><div style="font-size:24px">📊</div><div class="sv">${avg}%</div><div class="sl">Average Score</div></div><div class="sc"><div style="font-size:24px">🏆</div><div class="sv" style="color:#ffd700">${best}%</div><div class="sl">Best Score</div></div></div>
-<div style="display:grid;grid-template-columns:1fr 265px;gap:14px">
-  <div><div class="card mb12"><div class="fw7 accent mb10">📈 Progress Chart</div><canvas id="tr-canvas" height="200" style="width:100%;display:block"></canvas></div>
-  <div class="card"><div class="fw7 accent mb10">Session Log</div>${[...SESSIONS].reverse().map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)"><div><div class="fw7">${s.date} — ${s.dist} yd</div><div class="sub" style="font-size:12px;margin-top:2px">${s.notes||'—'}</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:900;color:${s.score>=90?'var(--g4)':s.score>=80?'var(--warn)':'var(--err)'}">${s.score}%</div><div class="sub" style="font-size:11px">${s.shots} shots</div></div></div>`).join('')}</div></div>
-  <div class="card"><div class="fw7 accent mb12">Log New Session</div>
-    <label class="lbl">Date</label><input type="date" id="tr-date" class="mb8"/>
-    <label class="lbl">Distance (yards)</label><input type="number" id="tr-dist" value="50" class="mb8"/>
-    <label class="lbl">Shots Fired</label><input type="number" id="tr-shots" value="30" class="mb8"/>
-    <label class="lbl">Score (%)</label><input type="number" id="tr-score" placeholder="0–100" class="mb8"/>
-    <label class="lbl">Notes</label><textarea id="tr-notes" rows="3" class="mb12"></textarea>
-    <button class="btn" style="width:100%" onclick="logSession()">Log Session</button>
-    <div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:8px;text-align:center"><div class="sub" style="font-size:12px;margin-bottom:4px">Trend</div><div style="font-size:22px;font-weight:900;color:${parseFloat(trend)>=0?'var(--g4)':'var(--err)'}">${parseFloat(trend)>=0?'↑':'↓'} ${Math.abs(trend)} pts</div></div>
-  </div>
-</div>`;}
-function trChart(){const canvas=document.getElementById('tr-canvas');if(!canvas||!SESSIONS.length)return;const cssW=canvas.getBoundingClientRect().width,W=Math.max(Math.floor(cssW),300),H=canvas.height;canvas.width=W;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);const isDark=!LIGHT,bg=isDark?'#0a1a0f':'#f0faf5',grid=isDark?'#1a3d25':'#b8dfc8',lbl=isDark?'#6dba8a':'#3a7a55';const yVals=SESSIONS.map(s=>s.score),pad={top:16,right:20,bottom:40,left:44},cw=W-pad.left-pad.right,ch=H-pad.top-pad.bottom,yMin=Math.max(0,Math.min(...yVals)-8),yMax=Math.min(100,Math.max(...yVals)+8);const toX=i=>pad.left+(i/(SESSIONS.length-1||1))*cw,toY=v=>pad.top+(1-(v-yMin)/(yMax-yMin))*ch;ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);ctx.strokeStyle=grid;ctx.lineWidth=1;for(let i=0;i<=4;i++){const y=pad.top+ch*(i/4);ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cw,y);ctx.stroke();}const avg=yVals.reduce((a,b)=>a+b,0)/yVals.length;ctx.save();ctx.strokeStyle='rgba(0,154,68,.4)';ctx.lineWidth=1;ctx.setLineDash([5,4]);const ay=toY(avg);ctx.beginPath();ctx.moveTo(pad.left,ay);ctx.lineTo(pad.left+cw,ay);ctx.stroke();ctx.restore();ctx.save();ctx.beginPath();SESSIONS.forEach((_,i)=>{i===0?ctx.moveTo(toX(i),toY(yVals[i])):ctx.lineTo(toX(i),toY(yVals[i]));});ctx.lineTo(toX(SESSIONS.length-1),pad.top+ch);ctx.lineTo(toX(0),pad.top+ch);ctx.closePath();ctx.fillStyle='rgba(0,154,68,.12)';ctx.fill();ctx.restore();ctx.save();ctx.strokeStyle='#009A44';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.setLineDash([]);ctx.beginPath();SESSIONS.forEach((_,i)=>{i===0?ctx.moveTo(toX(i),toY(yVals[i])):ctx.lineTo(toX(i),toY(yVals[i]));});ctx.stroke();ctx.restore();SESSIONS.forEach((_,i)=>{ctx.fillStyle='#009A44';ctx.beginPath();ctx.arc(toX(i),toY(yVals[i]),4,0,Math.PI*2);ctx.fill();});ctx.fillStyle=lbl;ctx.font='11px Inter,sans-serif';ctx.textAlign='right';for(let i=0;i<=4;i++){const v=yMin+(yMax-yMin)*(1-i/4);ctx.fillText(v.toFixed(0),pad.left-5,pad.top+ch*(i/4)+4);}ctx.textAlign='center';SESSIONS.forEach((s,i)=>ctx.fillText(s.date.slice(5),toX(i),pad.top+ch+18));ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.setLineDash([]);ctx.strokeRect(pad.left,pad.top,cw,ch);}
-function logSession(){const date=document.getElementById('tr-date')?.value,score=parseFloat(document.getElementById('tr-score')?.value);if(!date||isNaN(score)||score<0||score>100){toast('Date and valid score (0–100) required','warn');return;}SESSIONS.push({id:Date.now(),date,dist:+(document.getElementById('tr-dist').value)||50,shots:+(document.getElementById('tr-shots').value)||30,score,notes:document.getElementById('tr-notes').value.trim()});renderAll();setTimeout(trChart,60);toast('Session logged!');}
+// ── TRAINING ───────────────────────────────────────────────────────────────
+function trainingHTML(){
+  var avg=SESSIONS.length?(SESSIONS.reduce(function(a,s){return a+s.score;},0)/SESSIONS.length).toFixed(1):0;
+  var best=SESSIONS.length?Math.max.apply(null,SESSIONS.map(function(s){return s.score;})):0;
+  var trend=SESSIONS.length>1?(SESSIONS[SESSIONS.length-1].score-SESSIONS[0].score).toFixed(0):0;
+  return'<h2 class="accent mb16" style="font-size:20px">🎯 Training Session Tracker</h2>'+
+  '<div class="grid3 mb12"><div class="sc"><div style="font-size:24px">📋</div><div class="sv">'+SESSIONS.length+'</div><div class="sl">Sessions</div></div><div class="sc"><div style="font-size:24px">📊</div><div class="sv">'+avg+'%</div><div class="sl">Average Score</div></div><div class="sc"><div style="font-size:24px">🏆</div><div class="sv" style="color:#ffd700">'+best+'%</div><div class="sl">Best Score</div></div></div>'+
+  '<div style="display:grid;grid-template-columns:1fr 265px;gap:14px">'+
+  '<div><div class="card mb12"><div class="fw7 accent mb10">📈 Progress Chart</div><canvas id="tr-canvas" height="200" style="width:100%;display:block"></canvas></div>'+
+  '<div class="card"><div class="fw7 accent mb10">Session Log</div>'+[...SESSIONS].reverse().map(function(s){return'<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)"><div><div class="fw7">'+s.date+' — '+s.dist+' yd</div><div class="sub" style="font-size:12px;margin-top:2px">'+(s.notes||'—')+'</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:900;color:'+(s.score>=90?'var(--g4)':s.score>=80?'var(--warn)':'var(--err)')+'">'+s.score+'%</div><div class="sub" style="font-size:11px">'+s.shots+' shots</div></div></div>';}).join('')+'</div></div>'+
+  '<div class="card"><div class="fw7 accent mb12">Log New Session</div>'+
+  '<label class="lbl">Date</label><input type="date" id="tr-date" class="mb8"/>'+
+  '<label class="lbl">Distance (yards)</label><input type="number" id="tr-dist" value="50" class="mb8"/>'+
+  '<label class="lbl">Shots Fired</label><input type="number" id="tr-shots" value="30" class="mb8"/>'+
+  '<label class="lbl">Score (%)</label><input type="number" id="tr-score" placeholder="0–100" class="mb8"/>'+
+  '<label class="lbl">Notes</label><textarea id="tr-notes" rows="3" class="mb12"></textarea>'+
+  '<button class="btn" style="width:100%" id="tr-log">Log Session</button>'+
+  '<div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:8px;text-align:center"><div class="sub" style="font-size:12px;margin-bottom:4px">Trend</div>'+
+  '<div style="font-size:22px;font-weight:900;color:'+(parseFloat(trend)>=0?'var(--g4)':'var(--err)')+'">'+(parseFloat(trend)>=0?'↑':'↓')+' '+Math.abs(trend)+' pts</div></div></div></div>';
+}
+function bindTraining(){
+  document.getElementById('tr-log').addEventListener('click',function(){
+    var date=document.getElementById('tr-date').value,score=parseFloat(document.getElementById('tr-score').value);
+    if(!date||isNaN(score)||score<0||score>100){toast('Date and valid score (0–100) required','warn');return;}
+    SESSIONS.push({id:Date.now(),date:date,dist:+(document.getElementById('tr-dist').value)||50,shots:+(document.getElementById('tr-shots').value)||30,score:score,notes:document.getElementById('tr-notes').value.trim()});
+    renderAll();toast('Session logged!');
+  });
+  trChart();
+}
+function trChart(){
+  var canvas=document.getElementById('tr-canvas');if(!canvas||!SESSIONS.length)return;
+  var W=Math.max(Math.floor(canvas.getBoundingClientRect().width),300),H=canvas.height;
+  canvas.width=W;var ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  var isDark=!LIGHT,bg=isDark?'#0a1a0f':'#f0faf5',grid=isDark?'#1a3d25':'#b8dfc8',lbl=isDark?'#6dba8a':'#3a7a55';
+  var yVals=SESSIONS.map(function(s){return s.score;});
+  var pad={top:16,right:20,bottom:40,left:44},cw=W-pad.left-pad.right,ch=H-pad.top-pad.bottom;
+  var yMin=Math.max(0,Math.min.apply(null,yVals)-8),yMax=Math.min(100,Math.max.apply(null,yVals)+8);
+  function toX(i){return pad.left+(i/(SESSIONS.length-1||1))*cw;}
+  function toY(v){return pad.top+(1-(v-yMin)/(yMax-yMin))*ch;}
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle=grid;ctx.lineWidth=1;
+  for(var i=0;i<=4;i++){var y=pad.top+ch*(i/4);ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cw,y);ctx.stroke();}
+  ctx.save();ctx.beginPath();SESSIONS.forEach(function(_,i){i===0?ctx.moveTo(toX(i),toY(yVals[i])):ctx.lineTo(toX(i),toY(yVals[i]));});ctx.lineTo(toX(SESSIONS.length-1),pad.top+ch);ctx.lineTo(toX(0),pad.top+ch);ctx.closePath();ctx.fillStyle='rgba(0,154,68,.12)';ctx.fill();ctx.restore();
+  ctx.save();ctx.strokeStyle='#009A44';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.setLineDash([]);ctx.beginPath();SESSIONS.forEach(function(_,i){i===0?ctx.moveTo(toX(i),toY(yVals[i])):ctx.lineTo(toX(i),toY(yVals[i]));});ctx.stroke();ctx.restore();
+  SESSIONS.forEach(function(_,i){ctx.fillStyle='#009A44';ctx.beginPath();ctx.arc(toX(i),toY(yVals[i]),4,0,Math.PI*2);ctx.fill();});
+  ctx.fillStyle=lbl;ctx.font='11px Inter,sans-serif';ctx.textAlign='right';
+  for(var k=0;k<=4;k++){var v=yMin+(yMax-yMin)*(1-k/4);ctx.fillText(v.toFixed(0),pad.left-5,pad.top+ch*(k/4)+4);}
+  ctx.textAlign='center';SESSIONS.forEach(function(s,i){ctx.fillText(s.date.slice(5),toX(i),pad.top+ch+18);});
+  ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.setLineDash([]);ctx.strokeRect(pad.left,pad.top,cw,ch);
+}
 
-// ══════════════════════════════════════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════════════════════════════════════
-function adminHTML(){if(!CU||!['admin','mod'].includes(CU.role))return'<div class="card" style="text-align:center;padding:40px;color:var(--sub)">🔒 Admin / Moderator access required</div>';const isAdmin=CU.role==='admin',reports=THREADS.flatMap(t=>t.posts.filter(p=>p.reports.length&&!p.deleted).map(p=>({tid:t.id,ttitle:t.title,p})));return`
-<h2 class="accent mb16" style="font-size:20px">🔧 Admin Dashboard</h2>
-<div class="grid4 mb16"><div class="sc"><div style="font-size:22px">👥</div><div class="sv">${Object.keys(USERS).length}</div><div class="sl">Members</div></div><div class="sc"><div style="font-size:22px">💬</div><div class="sv">${THREADS.length}</div><div class="sl">Threads</div></div><div class="sc"><div style="font-size:22px">🚩</div><div class="sv" style="color:${reports.length?'var(--err)':'var(--g4)'}">${reports.length}</div><div class="sl">Reports</div></div><div class="sc"><div style="font-size:22px">📢</div><div class="sv">${BANNERS.reduce((a,b)=>a+b.imp,0).toLocaleString()}</div><div class="sl">Impressions</div></div></div>
-<div class="card mb14"><div class="fw7 accent mb12">📢 Banner Management</div>${BANNERS.map((b,i)=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap"><div style="width:110px;height:30px;background:${b.bg};border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:${b.fg};font-weight:700;flex-shrink:0;overflow:hidden;padding:0 4px">${b.label}</div><div style="flex:1"><div class="fw7">${b.label}</div><div class="sub" style="font-size:12px">👁 ${b.imp.toLocaleString()} · ${b.active?'Active':'Paused'}</div></div><button class="btn-ghost btn-sm" onclick="toggleBanner(${i})">${b.active?'Pause':'Activate'}</button>${isAdmin?`<button class="btn-danger btn-sm" onclick="deleteBanner(${i})">Delete</button>`:''}</div>`).join('')}${isAdmin?`<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><input id="nb-label" placeholder="Label..." style="flex:1;min-width:80px"/><input id="nb-text" placeholder="Ad headline..." style="flex:2;min-width:160px"/><input id="nb-link" placeholder="Link URL..." style="flex:1;min-width:80px"/><button class="btn btn-sm" onclick="addBanner()">+ Add</button></div>`:''}</div>
-<div class="card mb14"><div class="fw7 accent mb10">🚩 Reports Queue (${reports.length})</div>${reports.length?reports.map(r=>`<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap"><div><div class="fw7" style="font-size:13px">In: "${esc(r.ttitle)}"</div><div class="sub" style="font-size:12px;margin-top:2px">by ${r.p.author} · ${r.p.reports.length} report(s)</div><div style="margin-top:4px;font-size:13px">${esc(r.p.body).slice(0,120)}${r.p.body.length>120?'…':''}</div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn-ghost btn-sm" onclick="clearReport(${r.tid},${r.p.id})">Clear</button><button class="btn-danger btn-sm" onclick="modDel(${r.tid},${r.p.id})">Remove</button></div></div>`).join(''):'<p class="sub" style="font-size:13px;padding:10px 0">✅ No reported posts</p>'}</div>
-${isAdmin?`<div class="card"><div class="fw7 accent mb10">👥 User Management</div>${Object.values(USERS).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px"><div class="row" style="gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:13px">${u.role==='admin'?'👑':u.role==='mod'?'🛡️':'👤'}</div><div><div class="fw7">${u.name} <span class="badge ${u.role==='admin'?'badge-g':''}" style="${u.role==='mod'?'background:var(--warn);color:#000':''}">${u.role}</span>${u.banned?' <span class="badge" style="background:var(--err);color:#fff">Banned</span>':''}</div><div class="sub" style="font-size:11px">Rep: ${u.rep} · Joined: ${u.joined}</div></div></div><div style="display:flex;gap:6px">${u.name!=='admin'?`<button class="${u.banned?'btn':'btn-danger'} btn-sm" onclick="toggleBan('${u.name}')">${u.banned?'Unban':'Ban'}</button>`:''} ${u.role==='user'?`<button class="btn-warn btn-sm" onclick="promote('${u.name}')">→ Mod</button>`:''}</div></div>`).join('')}</div>`:''}
-`;}
-function toggleBanner(i){BANNERS[i].active=!BANNERS[i].active;renderAll();}
-function deleteBanner(i){BANNERS.splice(i,1);renderBanner();renderAll();}
-function addBanner(){const lbl=document.getElementById('nb-label')?.value.trim(),txt=document.getElementById('nb-text')?.value.trim();if(!lbl||!txt){toast('Label and text required','warn');return;}BANNERS.push({label:lbl,text:'📢  '+txt,link:document.getElementById('nb-link')?.value||'#',bg:'#004d22',fg:'#00c957',active:true,imp:0});renderBanner();renderAll();toast('Banner added');}
-function clearReport(tid,pid){const p=THREADS.find(t=>t.id===tid)?.posts.find(p=>p.id===pid);if(p){p.reports=[];renderAll();toast('Report cleared');}}
-function toggleBan(u){if(USERS[u]){USERS[u].banned=!USERS[u].banned;if(CU?.name===u&&USERS[u].banned)doLogout();renderAll();toast(USERS[u].banned?u+' banned':u+' unbanned');}}
-function promote(u){if(USERS[u]){USERS[u].role='mod';renderAll();toast(u+' promoted to mod');}}
+// ── ADMIN ──────────────────────────────────────────────────────────────────
+function adminHTML(){
+  if(!CU||(CU.role!=='admin'&&CU.role!=='mod'))return'<div class="card" style="text-align:center;padding:40px;color:var(--sub)">🔒 Admin / Moderator access required</div>';
+  var isAdmin=CU.role==='admin';
+  var reports=THREADS.reduce(function(acc,t){t.posts.filter(function(p){return p.reports.length&&!p.deleted;}).forEach(function(p){acc.push({tid:t.id,ttitle:t.title,p:p});});return acc;},[]);
+  return'<h2 class="accent mb16" style="font-size:20px">🔧 Admin Dashboard</h2>'+
+  '<div class="grid4 mb16"><div class="sc"><div style="font-size:22px">👥</div><div class="sv">'+Object.keys(USERS).length+'</div><div class="sl">Members</div></div><div class="sc"><div style="font-size:22px">💬</div><div class="sv">'+THREADS.length+'</div><div class="sl">Threads</div></div><div class="sc"><div style="font-size:22px">🚩</div><div class="sv" style="color:'+(reports.length?'var(--err)':'var(--g4)')+'">'+reports.length+'</div><div class="sl">Reports</div></div><div class="sc"><div style="font-size:22px">📢</div><div class="sv">'+BANNERS.reduce(function(a,b){return a+b.imp;},0).toLocaleString()+'</div><div class="sl">Impressions</div></div></div>'+
+  '<div class="card mb14"><div class="fw7 accent mb12">📢 Banner Management</div>'+BANNERS.map(function(b,i){return'<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap"><div style="width:110px;height:30px;background:'+b.bg+';border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:'+b.fg+';font-weight:700;flex-shrink:0;overflow:hidden;padding:0 4px">'+b.label+'</div><div style="flex:1"><div class="fw7">'+b.label+'</div><div class="sub" style="font-size:12px">👁 '+b.imp.toLocaleString()+' · '+(b.active?'Active':'Paused')+'</div></div><button class="btn-ghost btn-sm" data-tbanner="'+i+'">'+(b.active?'Pause':'Activate')+'</button>'+(isAdmin?'<button class="btn-danger btn-sm" data-dbanner="'+i+'">Delete</button>':'')+'</div>';}).join('')+
+  (isAdmin?'<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><input id="nb-label" placeholder="Label..." style="flex:1;min-width:80px"/><input id="nb-text" placeholder="Ad headline..." style="flex:2;min-width:160px"/><input id="nb-link" placeholder="Link URL..." style="flex:1;min-width:80px"/><button class="btn btn-sm" id="add-banner">+ Add</button></div>':'')+
+  '</div><div class="card mb14"><div class="fw7 accent mb10">🚩 Reports Queue ('+reports.length+')</div>'+
+  (reports.length?reports.map(function(r){return'<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap"><div><div class="fw7" style="font-size:13px">In: "'+esc(r.ttitle)+'"</div><div class="sub" style="font-size:12px;margin-top:2px">by '+r.p.author+' · '+r.p.reports.length+' report(s)</div><div style="margin-top:4px;font-size:13px">'+esc(r.p.body).slice(0,120)+'</div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn-ghost btn-sm" data-clr="'+r.tid+','+r.p.id+'">Clear</button><button class="btn-danger btn-sm" data-rmdel="'+r.tid+','+r.p.id+'">Remove</button></div></div>';}).join(''):'<p class="sub" style="font-size:13px;padding:10px 0">✅ No reported posts</p>')+
+  '</div>'+(isAdmin?'<div class="card"><div class="fw7 accent mb10">👥 User Management</div>'+Object.values(USERS).map(function(u){return'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px"><div class="row" style="gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:13px">'+(u.role==='admin'?'👑':u.role==='mod'?'🛡️':'👤')+'</div><div><div class="fw7">'+u.name+' <span class="badge '+(u.role==='admin'?'badge-g':'')+'" style="'+(u.role==='mod'?'background:var(--warn);color:#000':'')+'">'+u.role+'</span>'+(u.banned?' <span class="badge" style="background:var(--err);color:#fff">Banned</span>':'')+'</div><div class="sub" style="font-size:11px">Rep: '+u.rep+' · Joined: '+u.joined+'</div></div></div><div style="display:flex;gap:6px">'+(u.name!=='admin'?'<button class="'+(u.banned?'btn':'btn-danger')+' btn-sm" data-ban="'+u.name+'">'+(u.banned?'Unban':'Ban')+'</button>':'')+(u.role==='user'?'<button class="btn-warn btn-sm" data-promote="'+u.name+'">→ Mod</button>':'')+'</div></div>';}).join('')+'</div>':'');
+}
+function bindAdmin(){
+  document.querySelectorAll('[data-tbanner]').forEach(function(el){el.addEventListener('click',function(){BANNERS[parseInt(el.dataset.tbanner)].active=!BANNERS[parseInt(el.dataset.tbanner)].active;renderAll();});});
+  document.querySelectorAll('[data-dbanner]').forEach(function(el){el.addEventListener('click',function(){BANNERS.splice(parseInt(el.dataset.dbanner),1);renderBanner();renderAll();});});
+  var ab=document.getElementById('add-banner');
+  if(ab)ab.addEventListener('click',function(){var lbl=document.getElementById('nb-label').value.trim(),txt=document.getElementById('nb-text').value.trim();if(!lbl||!txt){toast('Label and text required','warn');return;}BANNERS.push({label:lbl,text:'📢  '+txt,link:document.getElementById('nb-link').value||'#',bg:'#004d22',fg:'#00c957',active:true,imp:0});renderBanner();renderAll();toast('Banner added');});
+  document.querySelectorAll('[data-clr]').forEach(function(el){el.addEventListener('click',function(){var pts=el.dataset.clr.split(',');var t=THREADS.find(function(t){return t.id===parseInt(pts[0]);});if(t){var p=t.posts.find(function(x){return x.id===parseInt(pts[1]);});if(p){p.reports=[];renderAll();toast('Report cleared');}}});});
+  document.querySelectorAll('[data-rmdel]').forEach(function(el){el.addEventListener('click',function(){var pts=el.dataset.rmdel.split(',');var t=THREADS.find(function(t){return t.id===parseInt(pts[0]);});if(t){var p=t.posts.find(function(x){return x.id===parseInt(pts[1]);});if(p){p.deleted=true;p.body='[Removed by moderator]';renderAll();toast('Post removed');}}});});
+  document.querySelectorAll('[data-ban]').forEach(function(el){el.addEventListener('click',function(){var u=USERS[el.dataset.ban];if(u){u.banned=!u.banned;if(CU&&CU.name===el.dataset.ban&&u.banned)doLogout();renderAll();toast(u.banned?el.dataset.ban+' banned':el.dataset.ban+' unbanned');}});});
+  document.querySelectorAll('[data-promote]').forEach(function(el){el.addEventListener('click',function(){var u=USERS[el.dataset.promote];if(u){u.role='mod';renderAll();toast(el.dataset.promote+' promoted to mod');}});});
+}
 
-// ══════════════════════════════════════════════════════════════════════════
-// LEGAL PAGE
-// ══════════════════════════════════════════════════════════════════════════
-function legalHTML(){return`
-<h2 class="accent mb16" style="font-size:20px">⚖️ Legal &amp; Safety Documents</h2>
-<div class="grid2"><div class="card"><div class="fw7 accent mb10">📋 Terms of Use</div><p style="line-height:1.75;color:var(--sub);font-size:13px">AirGun Oregon is provided for informational and educational purposes only. All ballistics calculations are theoretical estimates. Users must comply with all applicable laws. Users are solely responsible for safe and legal use of their equipment.</p></div><div class="card"><div class="fw7 accent mb10">⚠️ Safety Disclaimer &amp; Hold Harmless</div><p style="line-height:1.75;color:var(--sub);font-size:13px">AIRGUN OREGON LLC SHALL NOT BE LIABLE for any injury, death, property damage, or legal consequences arising from use of this platform. Always use proper backstops and eye protection. Never point an airgun at any person.</p></div><div class="card"><div class="fw7 accent mb10">🔒 Privacy Policy</div><p style="line-height:1.75;color:var(--sub);font-size:13px">We collect only data necessary to operate the platform. No personal data is sold to third parties. Session data is stored locally in your browser only.</p></div><div class="card"><div class="fw7 accent mb10">👶 Age Requirement</div><p style="line-height:1.75;color:var(--sub);font-size:13px">Users must be 18 years of age or older to register. Airgun use by minors must be supervised by a responsible adult. Always consult current state and local statutes.</p></div></div>`;}
+// ── LEGAL ──────────────────────────────────────────────────────────────────
+function legalHTML(){
+  return'<h2 class="accent mb16" style="font-size:20px">⚖️ Legal &amp; Safety Documents</h2>'+
+  '<div class="grid2"><div class="card"><div class="fw7 accent mb10">📋 Terms of Use</div><p style="line-height:1.75;color:var(--sub);font-size:13px">AirGun Oregon is provided for informational and educational purposes only. All ballistics calculations are theoretical estimates. Users must comply with all applicable laws.</p></div>'+
+  '<div class="card"><div class="fw7 accent mb10">⚠️ Safety Disclaimer &amp; Hold Harmless</div><p style="line-height:1.75;color:var(--sub);font-size:13px">AIRGUN OREGON LLC SHALL NOT BE LIABLE for any injury, death, property damage, or legal consequences arising from use of this platform.</p></div>'+
+  '<div class="card"><div class="fw7 accent mb10">🔒 Privacy Policy</div><p style="line-height:1.75;color:var(--sub);font-size:13px">We collect only data necessary to operate the platform. No personal data is sold. Session data is stored locally in your browser only.</p></div>'+
+  '<div class="card"><div class="fw7 accent mb10">👶 Age Requirement</div><p style="line-height:1.75;color:var(--sub);font-size:13px">Users must be 18 years of age or older. Airgun use by minors must be supervised by a responsible adult.</p></div></div>';
+}
 
-// ══════════════════════════════════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════════════════════════════════
+// ── BOOT ───────────────────────────────────────────────────────────────────
 renderBanner();
 renderNav();
-window.addEventListener('resize',()=>{if(PAGE==='ballistics')drawChart();if(PAGE==='training')trChart();});
+window.addEventListener('resize',function(){if(PAGE==='ballistics')drawChart();if(PAGE==='training')trChart();});
 </script>
 </body>
 </html>
